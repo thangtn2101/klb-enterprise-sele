@@ -37,15 +37,17 @@ async function login(){
 
     
     await new Promise(resolve => setTimeout(resolve, 5000));
-
-    // var tabBar7 = driver.wait(until.elementLocated(By.xpath('/html/body/app-dashboard/div/app-sidebar/app-sidebar-nav/app-sidebar-nav-items/app-sidebar-nav-dropdown[7]/a')), 10000);
-    // tabBar7.click();
     
-    await driver.findElement(By.xpath('/html/body/app-dashboard/div/app-sidebar/app-sidebar-nav/app-sidebar-nav-items/app-sidebar-nav-dropdown[7]/a')).click();
+    await driver.findElement(By.xpath("//a[contains(text(),'Quản lý đối tác')]")).click();
 
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
-    var merchantBar = driver.wait(until.elementLocated(By.xpath('/html/body/app-dashboard/div/app-sidebar/app-sidebar-nav/app-sidebar-nav-items/app-sidebar-nav-dropdown[7]/app-sidebar-nav-items/app-sidebar-nav-link[1]')), 10000);
-    merchantBar.click();
+    await driver.findElement(By.xpath("//a[@href='#/quan-ly-doi-tac/quan-ly-merchant']")).click();
+
+    var addMerchantButton = driver.wait(until.elementLocated(By.xpath("//span[contains(text(),'Thêm mới')]")), 10000);
+    addMerchantButton.click();
+
+    await new Promise(resolve => setTimeout(resolve, 5000));
 
     } finally {
         await driver.quit();
