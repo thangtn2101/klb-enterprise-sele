@@ -56,7 +56,7 @@ async function login() {
         var referralDropdown = await driver.wait(until.elementLocated(By.id(referralDropdownPath)), 10000);
         await referralDropdown.click();
         //Chọn giá trị mã giới thiệu 
-        var uniReferral = await driver.wait(until.elementLocated(By.xpath("//span[normalize-space()='UNICLOUD']")), 10000);
+        var uniReferral = await driver.wait(until.elementLocated(By.xpath("//span[normalize-space()='HOI SO NH KIEN LONG']")), 10000);
         await uniReferral.click();
 
         //Chọn loại hình doanh nghiệp 
@@ -175,52 +175,64 @@ async function login() {
         /* ------------------------ TẠO USER THÀNH CÔNG ----------------- */
         await new Promise(resolve => setTimeout(resolve, 2000));
 
-        const addAccountBTPath = "//button[@class='mat-btn-add success mr-0 px-3 py-1 p-button p-component ng-star-inserted']//span[contains(text(),'Thêm mới')]"
-        const addAccount = await driver.wait(until.elementLocated(By.xpath(addAccountBTPath)), 10000);
-        await driver.wait(until.elementIsVisible(addAccount), 3000);
-        await driver.wait(until.elementIsEnabled(addAccount), 3000);
-        await addAccount.click();
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        const typeValues = ['mat-option-184', 'mat-option-189', 'mat-option-190'];
 
-        //Chọn lọai TK 
-        const addAccountType1 = findElement(By.id('mat-select-22'));
-        await driver.wait(until.elementLocated(addAccountType1), 10000)
-        await driver.wait(until.elementIsVisible(addAccountType1), 3000);
-        await driver.wait(until.elementIsEnabled(addAccountType1), 3000);
+        for (const typeValue of typeValues) {
+            //Nhấn button "Thêm mới"
+            let addAccountBTPath;
+            if(typeValue === typeValues[0]){
+                console.log('184 ne');
+                addAccountBTPath = "//button[@class='mat-btn-add success mr-0 px-3 py-1 p-button p-component ng-star-inserted']//span[contains(text(),'Thêm mới')]"
+            }
+            else{
+                console.log(typeValues[0]);
+                console.log('khac 184 ne');
+                addAccountBTPath = "//span[contains(text(),'Thêm mới')]"
+            }
+            console.log('vao day luon ne');
 
-        await addAccountType1.click();
+            const addAccount = await driver.wait(until.elementLocated(By.xpath(addAccountBTPath)), 10000);
+            await driver.wait(until.elementIsVisible(addAccount), 3000);
+            await driver.wait(until.elementIsEnabled(addAccount), 3000);
+            await addAccount.click();
 
-        //Chọn tài khoản chuyen chi - 184
-        const addAccountTypeValue1 = await driver.wait(until.elementLocated(By.id('mat-option-184')), 10000);
-        await addAccountTypeValue1.click();
+            await new Promise(resolve => setTimeout(resolve, 2000));
 
-        //tài khoan chuyen thu -  mat-option-189
-        // tài khoản chuyen thu phi mat-option-190
+            //Chọn lọai TK 
+            const addAccountType1 = await driver.wait(until.elementLocated(By.id('mat-select-22')), 10000);
+            await driver.wait(until.elementIsVisible(addAccountType1), 3000);
+            await driver.wait(until.elementIsEnabled(addAccountType1), 3000);
+            await addAccountType1.click();
 
-        // Chọn Tài khoản 
-        const addAccountNum = await driver.wait(until.elementLocated(By.id('mat-select-24')), 10000);
-        await driver.wait(until.elementIsVisible(addAccountNum), 3000);
-        await driver.wait(until.elementIsEnabled(addAccountNum), 3000);
-        await addAccountNum.click();
-        //Chọn tài khoản chuyen chi - 188
-        const addAccountNumValue = await driver.wait(until.elementLocated(By.id('mat-option-187')), 10000);
-        await addAccountNumValue.click();
-
-        //Đợi Tài khoản hợp lệ 
-        const contentID = "mat-input-21"
-        const accountOwner = await driver.findElement(By.id(contentID));
-
-        const desiredValue = "AAAAAaaabbbcccdddeeeff";
+            //Chọn tài khoản chuyen chi {Động}
+            const addAccountTypeValue1 = await driver.wait(until.elementLocated(By.id(typeValue)), 10000);
+            await addAccountTypeValue1.click();
 
 
-        const isValueSet = await waitForInputValue(accountOwner, desiredValue, 10000);
 
-        if (isValueSet) {
-            //Nhấn lưu 
-            await driver.findElement(By.id('cancelVideoCall')).click();
-        } else {
-            console.log("Timeout: Desired value is not set in the input within the specified timeout.");
+            // Chọn Tài khoản 
+            const addAccountNum = await driver.wait(until.elementLocated(By.id('mat-select-24')), 10000);
+            await driver.wait(until.elementIsVisible(addAccountNum), 3000);
+            await driver.wait(until.elementIsEnabled(addAccountNum), 3000);
+            await addAccountNum.click();
+            //Chọn tài khoản chuyen chi - 188
+            const addAccountNumValue = await driver.wait(until.elementLocated(By.id('mat-option-186')), 10000);
+            await addAccountNumValue.click();
+
+            //Đợi Tài khoản hợp lệ 
+            const contentID = "mat-input-21"
+            const accountOwner = await driver.findElement(By.id(contentID));
+            const desiredValue = "AAAAAaaabbbcccdddeeeff";
+            const isValueSet = await waitForInputValue(accountOwner, desiredValue, 10000);
+            if (isValueSet) {
+                //Nhấn lưu 
+                await driver.findElement(By.xpath("//span[contains(text(),'Lưu')]")).click();
+            } else {
+                console.log("Timeout: Desired value is not set in the input within the specified timeout.");
+            }
+
         }
+
 
 
 
@@ -230,7 +242,7 @@ async function login() {
     } catch (e) {
         console.log(e);
     } finally {
-        await driver.quit();
+       // await driver.quit();
     }
 
 
