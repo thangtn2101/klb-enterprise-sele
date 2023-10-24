@@ -30,7 +30,7 @@ async function login() {
 
     try {
         // open appilication 
-        await driver.get('https://cms-web-flex-staging.kienlongbank.co/');
+        await driver.get('http://192.168.1.163:4200/');
 
         // Maximize the browser window to make it full-screen
         await driver.manage().window().maximize();
@@ -201,8 +201,12 @@ async function login() {
             await new Promise(resolve => setTimeout(resolve, 2000));
 
             //Nhấn vào dropdown Chọn lọai TK 
-            
-            const accountTypeDropPath = "//div//span[normalize-space()='Loại tài khoản']"
+            let accountTypeDropPath;
+            if(typeValue === typeValues[2]){
+                accountTypeDropPath = "//div[normalize-space()='TK chuyên thu']"
+            }else {
+                accountTypeDropPath = "//div[normalize-space()='Loại tài khoản']"
+            }
             const accountTypeDropComponent = await driver.wait(until.elementLocated(By.xpath(accountTypeDropPath)), 7000);
 
             await driver.wait(until.elementIsVisible(accountTypeDropComponent), 3000);
@@ -213,8 +217,7 @@ async function login() {
             const addAccountTypeValue1 = await driver.wait(until.elementLocated(By.xpath(typeValue)), 5000);
             await addAccountTypeValue1.click();
 
-
-
+            if (typeValue !== typeValues[2]) {
             // Chọn Tài khoản 
             const accountNumDropPath = "//div[normalize-space()='Số tài khoản']"
             const addAccountNum = await driver.wait(until.elementLocated(By.xpath(accountNumDropPath)), 5000);
@@ -222,10 +225,12 @@ async function login() {
             await driver.wait(until.elementIsVisible(addAccountNum), 3000);
             await driver.wait(until.elementIsEnabled(addAccountNum), 3000);
             await addAccountNum.click();
-            
+
             //Chọn tài khoản chuyen chi - 6788889
             const addAccountNumValue = await driver.wait(until.elementLocated(By.xpath("//span[normalize-space()='6788889']")), 5000);
             await addAccountNumValue.click();
+            }
+            
 
             //Đợi Tài khoản hợp lệ 
             const contentPath = "//div[normalize-space()='Tên tài khoản']//input"
@@ -240,12 +245,28 @@ async function login() {
                 throw new Error("Timeout: Desired value is not set in the input within the specified timeout.");
             }
         }
+
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        var continueButton = await driver.wait(until.elementLocated(By.xpath('//*[@id="cdk-step-content-0-1"]/div[2]/button[2]')), 1000);
+        await driver.wait(until.elementIsEnabled(continueButton), 1000);
+        await driver.wait(until.elementIsVisible(continueButton), 1000);
+        await continueButton.click();
+
+
+        
+        var continueButton2 = await driver.wait(until.elementLocated(By.xpath('//*[@id="cdk-step-content-0-2"]/div/button[2]')), 1000);
+        await driver.wait(until.elementIsEnabled(continueButton2), 1000);
+        await driver.wait(until.elementIsVisible(continueButton2), 1000);
+        await continueButton2.click();
+
+
         await new Promise(resolve => setTimeout(resolve, 15000));
 
     } catch (e) {
         console.log(e);
     } finally {
-        await driver.quit();
+        //await driver.quit();
     }
 
 
