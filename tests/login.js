@@ -2,7 +2,9 @@ const { Builder, By, Key, until, wait } = require("selenium-webdriver");
 
 const chrome = require("selenium-webdriver/chrome");
 
-const assert = require("assert")
+const assert = require("assert");
+
+const config = require('../config/config.js');
 
 
 async function waitForInputValue(accountOwner, expectedValue, timeout) {
@@ -30,13 +32,14 @@ async function login() {
 
     try {
         // open appilication 
-        await driver.get('http://192.168.1.163:4200/');
+        await driver.get(config.uatHostURL);
+
 
         // Maximize the browser window to make it full-screen
         await driver.manage().window().maximize();
 
-        const usernameValue = "343366";
-        const passwordValue = "Klb123@";
+        const usernameValue = config.adminUsername;
+        const passwordValue = config.adminPassword;
 
         var usernameInput = driver.wait(until.elementLocated(By.id('username')), 10000);
         await usernameInput.sendKeys(usernameValue);
@@ -66,7 +69,9 @@ async function login() {
         const bussinessTypePath = "mat-select-6"
         await driver.findElement(By.id(bussinessTypePath)).click();
         //Chọn giá trị công ty 
-        var bussinessType = driver.wait(until.elementLocated(By.xpath("//span[normalize-space()='Công ty']")), 10000);
+        const bussinessTypeValue = "Công ty"
+
+        var bussinessType = driver.wait(until.elementLocated(By.xpath("//span[normalize-space()='" + bussinessTypeValue + "']")), 10000);
         bussinessType.click();
 
         //Nhập Cif 
@@ -202,9 +207,9 @@ async function login() {
 
             //Nhấn vào dropdown Chọn lọai TK 
             let accountTypeDropPath;
-            if(typeValue === typeValues[2]){
+            if (typeValue === typeValues[2]) {
                 accountTypeDropPath = "//div[normalize-space()='TK chuyên thu']"
-            }else {
+            } else {
                 accountTypeDropPath = "//div[normalize-space()='Loại tài khoản']"
             }
             const accountTypeDropComponent = await driver.wait(until.elementLocated(By.xpath(accountTypeDropPath)), 7000);
@@ -218,19 +223,20 @@ async function login() {
             await addAccountTypeValue1.click();
 
             if (typeValue !== typeValues[2]) {
-            // Chọn Tài khoản 
-            const accountNumDropPath = "//div[normalize-space()='Số tài khoản']"
-            const addAccountNum = await driver.wait(until.elementLocated(By.xpath(accountNumDropPath)), 5000);
+                // Chọn Tài khoản 
+                const accountNumDropPath = "//div[normalize-space()='Số tài khoản']"
+                const addAccountNum = await driver.wait(until.elementLocated(By.xpath(accountNumDropPath)), 5000);
 
-            await driver.wait(until.elementIsVisible(addAccountNum), 3000);
-            await driver.wait(until.elementIsEnabled(addAccountNum), 3000);
-            await addAccountNum.click();
+                await driver.wait(until.elementIsVisible(addAccountNum), 3000);
+                await driver.wait(until.elementIsEnabled(addAccountNum), 3000);
+                await addAccountNum.click();
 
-            //Chọn tài khoản chuyen chi - 6788889
-            const addAccountNumValue = await driver.wait(until.elementLocated(By.xpath("//span[normalize-space()='6788889']")), 5000);
-            await addAccountNumValue.click();
+                //Chọn tài khoản chuyen chi - 6788889
+                const accountNo = '6788889'
+                const addAccountNumValue = await driver.wait(until.elementLocated(By.xpath("//span[normalize-space()='" + accountNo + "']")), 5000);
+                await addAccountNumValue.click();
             }
-            
+
 
             //Đợi Tài khoản hợp lệ 
             const contentPath = "//div[normalize-space()='Tên tài khoản']//input"
@@ -247,18 +253,58 @@ async function login() {
         }
 
         await new Promise(resolve => setTimeout(resolve, 2000));
-
         var continueButton = await driver.wait(until.elementLocated(By.xpath('//*[@id="cdk-step-content-0-1"]/div[2]/button[2]')), 1000);
         await driver.wait(until.elementIsEnabled(continueButton), 1000);
         await driver.wait(until.elementIsVisible(continueButton), 1000);
         await continueButton.click();
 
 
-        
+        //BY PASS STEP 3 
         var continueButton2 = await driver.wait(until.elementLocated(By.xpath('//*[@id="cdk-step-content-0-2"]/div/button[2]')), 1000);
         await driver.wait(until.elementIsEnabled(continueButton2), 1000);
         await driver.wait(until.elementIsVisible(continueButton2), 1000);
         await continueButton2.click();
+
+        //STEP 4 BẮT ĐẦU Ở ĐÂY
+
+        //Upload Giấy phép kinh doanh
+        const uploadBusinessLicenseButtonPath = '//*[@id="BUSINESS_REGISTRATION"]'
+        var uploadBusinessLicenseButton = await driver.wait(until.elementLocated(By.xpath(uploadBusinessLicenseButtonPath)), 1000);
+        await driver.wait(until.elementIsEnabled(uploadBusinessLicenseButton), 1000);
+        await uploadBusinessLicenseButton.sendKeys('/home/unicloud/Documents/PDF example/Size_8.9MB.pdf')
+
+        //Upload Hợp đồng
+        const uploadBusinessContractButtonPath = '//*[@id="CONTRACT"]'
+        var uploadBusinessContractButton = await driver.wait(until.elementLocated(By.xpath(uploadBusinessContractButtonPath)), 1000);
+        await driver.wait(until.elementIsEnabled(uploadBusinessContractButton), 1000);
+        await uploadBusinessContractButton.sendKeys('/home/unicloud/Documents/PDF example/Size_8.9MB.pdf')
+
+        //Upload Giấy chứng nhận đại diện hợp pháp
+
+        const uploadLegalContractButtonPath = '//*[@id="LEGAL_DOCS"]'
+        var uploadLegalContractButton = await driver.wait(until.elementLocated(By.xpath(uploadLegalContractButtonPath)), 1000);
+        await driver.wait(until.elementIsEnabled(uploadLegalContractButton), 1000);
+        await uploadLegalContractButton.sendKeys('/home/unicloud/Documents/PDF example/Size_8.9MB.pdf')
+
+        //Upload GTTT mặt trước
+        const uploadFrontIDButtonPath = '//*[@id="logo"]'
+        var uploadFrontIDButton = await driver.wait(until.elementLocated(By.xpath(uploadFrontIDButtonPath)), 1000);
+        await driver.wait(until.elementIsEnabled(uploadFrontIDButton), 1000);
+        await uploadFrontIDButton.sendKeys('/home/unicloud/Pictures/backcground.jpg')
+
+        //Upload GTTT mặt sau
+
+        const uploadBackIDButtonPath = '//*[@id="logo2"]'
+        var uploadBackIDButton = await driver.wait(until.elementLocated(By.xpath(uploadBackIDButtonPath)), 1000);
+        await driver.wait(until.elementIsEnabled(uploadBackIDButton), 1000);
+        await uploadBackIDButton.sendKeys('/home/unicloud/Pictures/doggie_corgi-1280x600.jpg')
+
+        
+        //Nhấn tiếp tục
+        var continueButton3 = await driver.wait(until.elementLocated(By.xpath('//*[@id="cdk-step-content-0-3"]/div[2]/button[2]')), 1000);
+        await driver.wait(until.elementIsEnabled(continueButton3), 1000);
+        await driver.wait(until.elementIsVisible(continueButton3), 1000);
+        await continueButton3.click();
 
 
         await new Promise(resolve => setTimeout(resolve, 15000));
