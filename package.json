@@ -4,11 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --no-timeouts tests/login.js",
+    "test-mc":"mocha --no-timeouts tests/merchantTest.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "selenium-webdriver": "^4.12.0"
+  },
+  "devDependencies": {
+    "mocha": "^10.2.0"
   }
 }

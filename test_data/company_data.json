@@ -1,7 +1,9 @@
 {
     "type":"Công ty",
+    "affiliate":"HOI SO NH KIEN LONG",
     "cif":"001281197",
     "tax_code":"4201867960",
     "account_no":"6788889",
-    "account_owner": "AAAAAaaabbbcccdddeeeff"
+    "account_owner": "AAAAAaaabbbcccdddeeeff",
+    "merchantName" : "[Test] Highlands Coffee"
 }
