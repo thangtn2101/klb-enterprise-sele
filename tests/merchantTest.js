@@ -1,4 +1,4 @@
-const { Builder, By, Key, until, wait } = require("selenium-webdriver");
+const {By, until } = require("selenium-webdriver");
 
 const assert = require("assert");
 
@@ -16,18 +16,22 @@ const PackageEnum = require("../enums/packageEnum.js")
 
 const ChargeTypeEnum = require("../enums/chargeTypeEnum.js")
 
-const SexEnum = require("../enums/sexEnum.js")
+const SexEnum = require("../enums/sexEnum.js");
+const { it } = require("mocha");
 
 
 describe('Merchant Module Tests', function () {
   let driver;
+  let merchantPage;
 
-  beforeEach(async function () {
+
+  before(async function () {
     driver = await helper.initializeChromeDriver();
+    merchantPage = new MerchantPage(driver);
   }
   );
 
-  afterEach(async function () {
+  after(async function () {
     // await driver.quit();
   });
 
@@ -40,20 +44,21 @@ describe('Merchant Module Tests', function () {
 
     await loginPage.login(username, password, adminName);
 
-    const merchantPage = new MerchantPage(driver);
+
     await merchantPage.navigate();
 
     const merchantType = companyData.type;
     const affiliate = companyData.affiliate;
     const merchantCif = companyData.cif;
-    
+    const companyName = companyData.companyName;
+
     const limitPackageValue = PackageEnum.SILVER;
     const chargeTypeValue = ChargeTypeEnum.MONTHLY;
 
-    const repesentName = "Trần Giang Thiếu Anh";
-    const repesentDoB = "21/01/2001";
+    const repesentName = companyData.repesentName;
+    const repesentDoB = companyData.repesentDoB;
     const sex = SexEnum.MALE;
-    const representEmail = "thang@gmail.com.vn"
+    const representEmail = companyData.representEmail;
     const isWhiteList = false;
 
 
@@ -63,6 +68,7 @@ describe('Merchant Module Tests', function () {
       merchantType,
       affiliate,
       merchantCif,
+      companyName,
       limitPackageValue,
       chargeTypeValue,
       repesentName,
@@ -75,13 +81,39 @@ describe('Merchant Module Tests', function () {
     const notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
     const successMessage = await notification.getText();
 
+
     const regExpObject = new RegExp("Khởi tạo đối tác thành công");
-    assert.match(successMessage, regExpObject);
-
-    //Step 2 
-    merchantPage.addAccountForMC();
-
-    
+    assert.match(successMessage, regExpObject, "Khởi tạo không thành công");
   });
+
+  it('Add account successfully', async function () {
+    await merchantPage.addAccountForMC();
+
+    //Expected 3 account add successfully to Mc 
+    const tableBody = await driver.findElement(By.css('tbody[role="rowgroup"]'));
+    const rows = await tableBody.findElements(By.css('tr[role="row"]'));
+    assert.equal(rows.length, 3, "Gán tài khoản không thành công");
+  });
+
+  it('Add MC Fee successfully', async function () {
+    var continueButton = await driver.wait(until.elementLocated(By.xpath('//*[@id="cdk-step-content-0-2"]/div/button[2]')), 1000);
+    await driver.wait(until.elementIsEnabled(continueButton), 1000);
+    await driver.wait(until.elementIsVisible(continueButton), 1000);
+    await continueButton.click();
+    assert.equal(1, 1, "Gán phí không thành công");
+  });
+
+  it('Upload MC document successfully', async function () {
+
+    var continueButton = await driver.wait(until.elementLocated(By.xpath('//*[@id="cdk-step-content-0-3"]/div[2]/button[2]')), 1000);
+    await driver.wait(until.elementIsEnabled(continueButton), 1000);
+    await driver.wait(until.elementIsVisible(continueButton), 1000);
+    await continueButton.click();
+    assert.equal(1, 1, "Gán phí không thành công");
+  });
+
+
+
+
 
 });

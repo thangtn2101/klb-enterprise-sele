@@ -33,7 +33,6 @@ async function initializeChromeDriver() {
   
     // Make it full-screen
     await driver.manage().window().maximize();
-    console.log('runokie');
 
     return driver; // Return the initialized driver
   }

@@ -17,7 +17,7 @@ class MerchantPage {
     }
 
     //step 1 
-    async createMCProfile(merchantType, affiliate, merchantCif, merchantNameValue,limitPackageValue, chargeTypeValue, repesentName, repesentDoB, sex, representEmail, isWhiteList) {
+    async createMCProfile(merchantType, affiliate, merchantCif, merchantNameValue, limitPackageValue, chargeTypeValue, repesentName, repesentDoB, sex, representEmail, isWhiteList) {
         console.log('Start search MC info');
 
         //find button add
@@ -91,7 +91,7 @@ class MerchantPage {
 
         //Nhập username mới
         var timestamp = new Date().getTime();
-        var username = "thang_" + timestamp;
+        var username = "tester_" + timestamp;
         const usernameMC = await this.driver.findElement(By.id('mat-input-3'));
         await usernameMC.click();
         await usernameMC.clear();
@@ -109,7 +109,6 @@ class MerchantPage {
         const sexRadioEle = await this.driver.findElement(By.id(sex));
         await this.driver.wait(until.elementIsVisible(sexRadioEle), 3000);
         await sexRadioEle.click();
-
 
         //Chọn quốc tịch 
         const countryId = "mat-select-value-15"
@@ -129,7 +128,6 @@ class MerchantPage {
         await identificationValue.click();
 
         const issuanceDate = await this.driver.findElement(By.id('mat-input-7'));
-        await issuanceDate.click();
         await issuanceDate.clear();
         await issuanceDate.sendKeys("12/12/2011");
 
@@ -175,69 +173,69 @@ class MerchantPage {
 
     //step 2 
     async addAccountForMC() {
-        console.info('Start add MC account');
 
         const typeValues = [
             "//span[normalize-space()='TK chuyên chi']",
             "//span[normalize-space()='TK chuyên thu']",
             "//span[normalize-space()='TK thu phí']"
         ];
-
         for (const typeValue of typeValues) {
-            console.info('Length ' + typeValues.length());
-            console.info('Start add MC account 1 ');
-
             //Nhấn button "Thêm mới"
-            const addAccountBTPath = "//button[contains(span, 'Thêm mới')]";            
-            console.info("value: " + typeValue);
-            const addAccount = await this.driver.wait(until.elementLocated(By.xpath(addAccountBTPath)), 10000);
-            await this.driver.wait(until.elementIsVisible(addAccount), 3000);
-            await this.driver.wait(until.elementIsEnabled(addAccount), 3000);
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            const addAccountBTPath = "//button[contains(span, 'Thêm mới')]";
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            const addAccount = await this.driver.wait(until.elementLocated(By.xpath(addAccountBTPath)), 5000);
+            await this.driver.wait(until.elementIsVisible(addAccount), 5000);
+            await this.driver.wait(until.elementIsEnabled(addAccount), 5000);
             await addAccount.click();
 
+            const loadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
+            const loadingElement = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
+            await this.driver.wait(until.stalenessOf(loadingElement), 10000);
+
             //Nhấn vào dropdown Chọn lọai TK 
-            let accountTypeDropPath;
-            if (typeValue === typeValues[2]) {
-                accountTypeDropPath = "//div[normalize-space()='TK chuyên thu']"
-            } else {
-                accountTypeDropPath = "//div[normalize-space()='Loại tài khoản']"
-            }
+            let accountTypeDropPath = "//div[contains(span,'Loại tài khoản')]";
+
             const accountTypeDropComponent = await this.driver.wait(until.elementLocated(By.xpath(accountTypeDropPath)), 7000);
 
             await this.driver.wait(until.elementIsVisible(accountTypeDropComponent), 3000);
             await this.driver.wait(until.elementIsEnabled(accountTypeDropComponent), 3000);
             await accountTypeDropComponent.click();
 
-            //Chọn tài khoản chuyen chi 
-            const addAccountTypeValue1 = await this.driver.wait(until.elementLocated(By.xpath(typeValue)), 5000);
-            await addAccountTypeValue1.click();
+            //Chọn giá trị loại tài khoản
+            const addAccountTypeValue = await this.driver.wait(until.elementLocated(By.xpath(typeValue)), 5000);
+            await addAccountTypeValue.click();
 
-            if (typeValue !== typeValues[2]) {
-                // Chọn Tài khoản 
-                const accountNumDropPath = "//div[normalize-space()='Số tài khoản']"
-                const addAccountNum = await this.driver.wait(until.elementLocated(By.xpath(accountNumDropPath)), 5000);
 
-                await this.driver.wait(until.elementIsVisible(addAccountNum), 3000);
-                await this.driver.wait(until.elementIsEnabled(addAccountNum), 3000);
-                await addAccountNum.click();
+            // Chọn Tài khoản 
+            const accountNumDropPath = "//div[contains(span,'Số tài khoản')]"
+            const addAccountNum = await this.driver.wait(until.elementLocated(By.xpath(accountNumDropPath)), 5000);
 
-                //Chọn tài khoản chuyen chi - 6788889
-                const accountNo = '6788889'
-                const addAccountNumValue = await this.driver.wait(until.elementLocated(By.xpath("//span[normalize-space()='" + accountNo + "']")), 5000);
-                await addAccountNumValue.click();
-            }
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await this.driver.wait(until.elementIsVisible(addAccountNum), 3000);
+            await this.driver.wait(until.elementIsEnabled(addAccountNum), 3000);
+            await addAccountNum.click();
 
+            //Chọn tài khoản chuyen chi - 6788889
+            const accountNo = '6788889'
+            const addAccountNumValue = await this.driver.wait(until.elementLocated(By.xpath("//mat-option[contains(span,'"+accountNo+"')]")), 5000);
+            await addAccountNumValue.click();
 
             await this.driver.findElement(By.xpath("//span[contains(text(),'Lưu')]")).click();
 
+            const saveLoadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
+            const saveLoadingElement = await this.driver.wait(until.elementLocated(By.xpath(saveLoadingPath)), 10000);
+            await this.driver.wait(until.stalenessOf(saveLoadingElement), 10000);
+
         }
 
+        await new Promise(resolve => setTimeout(resolve, 2000));
         var continueButton = await this.driver.wait(until.elementLocated(By.xpath('//*[@id="cdk-step-content-0-1"]/div[2]/button[2]')), 1000);
         await this.driver.wait(until.elementIsEnabled(continueButton), 1000);
         await this.driver.wait(until.elementIsVisible(continueButton), 1000);
         await continueButton.click();
+
+    }
+
+    async uploadDocument() {
 
     }
 }

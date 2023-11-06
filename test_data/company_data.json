@@ -1,9 +1,12 @@
 {
-    "type":"Công ty",
-    "affiliate":"HOI SO NH KIEN LONG",
-    "cif":"001281197",
-    "tax_code":"4201867960",
-    "account_no":"6788889",
+    "type": "Công ty",
+    "affiliate": "HOI SO NH KIEN LONG",
+    "cif": "001281197",
+    "tax_code": "4201867960",
+    "account_no": "6788889",
     "account_owner": "AAAAAaaabbbcccdddeeeff",
-    "merchantName" : "[Test] Highlands Coffee"
+    "companyName": "[DN] Highlands Coffee",
+    "repesentName": "Trần Giang Thiếu Anh",
+    "repesentDoB": "21/01/2001",
+    "representEmail": "thang@gmail.com.vn"
 }
