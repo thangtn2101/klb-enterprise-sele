@@ -1,0 +1,16 @@
+module.exports = {
+    DU_LICH: "mat-option-19",
+    DICH_VU_AN_UONG: "mat-option-20",
+    QUAN_LY_DICH_VU: "mat-option-21",
+    THUONG_MAI_DIEN_TU: "mat-option-22",
+    GIAO_DUC: "mat-option-23",
+    CHAM_SOC_SUC_KHOE: "mat-option-24",
+    THAM_MY: "mat-option-25",
+    BAO_HIEM: "mat-option-26",
+    VAN_TAI: "mat-option-27",
+    GIAI_PHAP_TAI_CHINH: "mat-option-28",
+    Y_TE: "mat-option-29",
+    GIAI_TRI: "mat-option-30",
+    SIEU_THI: "mat-option-31",
+    KHAC: "mat-option-32",
+};

@@ -2,6 +2,8 @@ const { By, until } = require("selenium-webdriver");
 
 const config = require('../utils/config.js');
 
+const helper = require('../utils/helpers.js');
+
 const assert = require("assert");
 
 
@@ -17,10 +19,8 @@ class MerchantPage {
     }
 
     //step 1 
-    async createMCProfile(merchantType, affiliate, merchantCif, merchantNameValue, limitPackageValue, chargeTypeValue, repesentName, repesentDoB, sex, representEmail, isWhiteList) {
-        console.log('Start search MC info');
-
-        //find button add
+    async createMCProfile(merchantType, affiliate, merchantCif, merchantNameValue, limitPackageValue, businessType, chargeTypeValue, repesentName, repesentDoB, sex, representEmail, isWhiteList) {
+        //Find button add
         var addMerchantButton = await this.driver.wait(until.elementLocated(By.xpath("//span[contains(text(),'Thêm mới')]")), 10000);
         await addMerchantButton.click();
 
@@ -88,19 +88,42 @@ class MerchantPage {
         var valueFeeChargeType = await this.driver.wait(until.elementLocated(By.id(chargeTypeValue)), 10000);
         await valueFeeChargeType.click();
 
+        //Chọn loại hình kinh doanh
+        const businessCatePath = 'mat-select-10';
+        const businessCateEle = await this.driver.findElement(By.id(businessCatePath));
+        await this.driver.wait(until.elementIsVisible(businessCateEle), 3000);
+        await businessCateEle.click();
+
+        //Chọn giá trị loại hình kinh doanh
+        var businessCateValue = await this.driver.wait(until.elementLocated(By.id(businessType)), 10000);
+        await businessCateValue.click();
+        
+
 
         //Nhập username mới
-        var timestamp = new Date().getTime();
-        var username = "tester_" + timestamp;
+        let isExisted = true;
+        let username;
+
+        while (isExisted) {
+            let randomString = helper.generateRandomString(5);
+            username = "MC_" + randomString;
+            isExisted = await helper.checkUsernameAvailability(username);
+        }
         const usernameMC = await this.driver.findElement(By.id('mat-input-3'));
         await usernameMC.click();
         await usernameMC.clear();
         await usernameMC.sendKeys(username);
 
-        //Nhập thông tin người đại diện 
 
+        //Nhập thông tin người đại diện 
         const repesentNameEle = await this.driver.findElement(By.id('mat-input-4'));
-        await repesentNameEle.sendKeys(repesentName);
+        await repesentNameEle.click();
+
+        const loadingElement1 = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
+        await this.driver.wait(until.stalenessOf(loadingElement1), 10000);
+
+        await repesentNameEle.clear();
+        await repesentNameEle.sendKeys("[Đại diện]"+repesentName);
 
         const repesentDoBEle = await this.driver.findElement(By.id('mat-input-5'));
         await repesentDoBEle.sendKeys(repesentDoB);
@@ -147,7 +170,7 @@ class MerchantPage {
         const contactNameEle = await this.driver.findElement(By.id('mat-input-9'));
         await contactNameEle.click();
         await contactNameEle.clear();
-        await contactNameEle.sendKeys(repesentName);
+        await contactNameEle.sendKeys("[Đại diện]"+repesentName);
 
         //SDT
         const contactPhoneEle = await this.driver.findElement(By.id('mat-input-10'));
@@ -172,7 +195,7 @@ class MerchantPage {
     }
 
     //step 2 
-    async addAccountForMC() {
+    async addAccountForMC(accountNo) {
 
         const typeValues = [
             "//span[normalize-space()='TK chuyên chi']",
@@ -214,9 +237,7 @@ class MerchantPage {
             await this.driver.wait(until.elementIsEnabled(addAccountNum), 3000);
             await addAccountNum.click();
 
-            //Chọn tài khoản chuyen chi - 6788889
-            const accountNo = '6788889'
-            const addAccountNumValue = await this.driver.wait(until.elementLocated(By.xpath("//mat-option[contains(span,'"+accountNo+"')]")), 5000);
+            const addAccountNumValue = await this.driver.wait(until.elementLocated(By.xpath("//mat-option[contains(span,'" + accountNo + "')]")), 5000);
             await addAccountNumValue.click();
 
             await this.driver.findElement(By.xpath("//span[contains(text(),'Lưu')]")).click();
@@ -232,11 +253,62 @@ class MerchantPage {
         await this.driver.wait(until.elementIsEnabled(continueButton), 1000);
         await this.driver.wait(until.elementIsVisible(continueButton), 1000);
         await continueButton.click();
-
+        // const loadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
+        // const loadingElement = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
+        // await this.driver.wait(until.stalenessOf(loadingElement), 10000);
     }
 
-    async uploadDocument() {
+    async uploadDocument(documentType, imageURL) {
+        var uploadButton = await this.driver.wait(until.elementLocated(By.xpath(documentType)), 1000);
+        await this.driver.wait(until.elementIsEnabled(uploadButton), 1000);
+        await uploadButton.sendKeys(imageURL)
+        const loadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
+        const loadingElement = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
+        await this.driver.wait(until.stalenessOf(loadingElement), 10000);
+    }
 
+    async generateIntergration(webhookURL, retryValue) {
+        const urlHostInput = await this.driver.findElement(By.id('mat-input-16'));
+        await this.driver.wait(until.elementIsEnabled(urlHostInput), 2000);
+        await this.driver.wait(until.elementIsVisible(urlHostInput), 2000);
+        await urlHostInput.sendKeys(webhookURL);
+
+        const retryInput = await this.driver.findElement(By.id('mat-input-18'));
+        await retryInput.sendKeys(retryValue);
+
+        const genEKeyButtonPath = '//*[@id="cdk-step-content-0-4"]/div/app-form-tich-hop/form/div[2]/div[6]/div/mat-form-field/div/div[1]/div/button'
+        var genEKeyButton = await this.driver.wait(until.elementLocated(By.xpath(genEKeyButtonPath)), 1000);
+        await this.driver.wait(until.elementIsEnabled(genEKeyButton), 1000);
+        await this.driver.wait(until.elementIsVisible(genEKeyButton), 1000);
+        await genEKeyButton.click();
+
+        const loadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
+        const loadingElement = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
+        await this.driver.wait(until.stalenessOf(loadingElement), 10000);
+
+
+        const genSKeyButtonPath = '//*[@id="cdk-step-content-0-4"]/div/app-form-tich-hop/form/div[2]/div[8]/div/mat-form-field/div/div[1]/div/button'
+        var genSKeyButton = await this.driver.wait(until.elementLocated(By.xpath(genSKeyButtonPath)), 1000);
+        await this.driver.wait(until.elementIsEnabled(genSKeyButton), 1000);
+        await this.driver.wait(until.elementIsVisible(genSKeyButton), 1000);
+        await genSKeyButton.click();
+
+        const loadingElement1 = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
+        await this.driver.wait(until.stalenessOf(loadingElement1), 10000);
+
+        await this.driver.findElement(By.id('mat-input-17'))
+            .getAttribute('value').then(textValue => {
+                assert.notEqual('', textValue);
+            });
+
+
+        await this.driver.findElement(By.id('mat-input-19'))
+            .getAttribute('value').then(textValue => {
+                assert.notEqual('', textValue);
+            });
+
+        //Nhấn lưu 
+        await this.driver.findElement(By.xpath('//*[@id="cdk-step-content-0-4"]/div/app-form-tich-hop/div[2]/button')).click();
     }
 }
 
