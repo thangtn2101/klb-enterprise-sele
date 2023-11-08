@@ -88,10 +88,12 @@ describe('Merchant Module Tests', function () {
 
     const notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
     const successMessage = await notification.getText();
-    await driver.wait(until.stalenessOf(notification), 10000);
-
     const regExpObject = new RegExp("Khởi tạo đối tác thành công");
     assert.match(successMessage, regExpObject);
+    
+    await driver.wait(until.stalenessOf(notification), 10000);
+
+
 
   });
 
@@ -199,7 +201,7 @@ describe('Merchant Module Tests', function () {
     successMessage = await notification.getText();
 
     const regExpObject = new RegExp("Success");
-    assert.match(successMessage, regExpObject, "Tạo key thất bại");
+    assert.match(successMessage, regExpObject);
   });
 
 

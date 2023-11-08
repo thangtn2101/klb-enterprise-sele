@@ -1,4 +1,4 @@
-const { By, until } = require("selenium-webdriver");
+const { By, until, Key } = require("selenium-webdriver");
 
 const config = require('../utils/config.js');
 
@@ -14,7 +14,6 @@ class MerchantPage {
     }
 
     async navigate() {
-        console.info('Navigate');
         await this.driver.get(config.host + '#/quan-ly-doi-tac/quan-ly-merchant');
     }
 
@@ -309,6 +308,23 @@ class MerchantPage {
 
         //Nhấn lưu 
         await this.driver.findElement(By.xpath('//*[@id="cdk-step-content-0-4"]/div/app-form-tich-hop/div[2]/button')).click();
+    }
+
+    async navigateMerchantDetail(id) {
+        this.navigate();
+        
+
+        const searchInput = await this.driver.findElement(By.xpath("//input[contains(@placeholder, 'Số CIF')]"));
+        await this.driver.wait(until.elementIsEnabled(searchInput), 2000);
+        await this.driver.wait(until.elementIsVisible(searchInput), 2000);
+        await searchInput.sendKeys(id, Key.ENTER);
+
+
+
+    }
+
+    async approvedMerchant() {
+
     }
 }
 
