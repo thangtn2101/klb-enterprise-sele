@@ -96,7 +96,7 @@ class MerchantPage {
         //Chọn giá trị loại hình kinh doanh
         var businessCateValue = await this.driver.wait(until.elementLocated(By.id(businessType)), 10000);
         await businessCateValue.click();
-        
+
 
 
         //Nhập username mới
@@ -122,7 +122,7 @@ class MerchantPage {
         await this.driver.wait(until.stalenessOf(loadingElement1), 10000);
 
         await repesentNameEle.clear();
-        await repesentNameEle.sendKeys("[Đại diện]"+repesentName);
+        await repesentNameEle.sendKeys("[Đại diện]" + repesentName);
 
         const repesentDoBEle = await this.driver.findElement(By.id('mat-input-5'));
         await repesentDoBEle.sendKeys(repesentDoB);
@@ -169,7 +169,7 @@ class MerchantPage {
         const contactNameEle = await this.driver.findElement(By.id('mat-input-9'));
         await contactNameEle.click();
         await contactNameEle.clear();
-        await contactNameEle.sendKeys("[Đại diện]"+repesentName);
+        await contactNameEle.sendKeys("[Đại diện]" + repesentName);
 
         //SDT
         const contactPhoneEle = await this.driver.findElement(By.id('mat-input-10'));
@@ -188,8 +188,16 @@ class MerchantPage {
             await this.driver.findElement(By.id('mat-checkbox-1')).click();
         }
 
+        //Find merchant ID
+        const mcID = await this.driver.findElement(By.xpath("//input[contains(@placeholder, 'Nhập Mã Đối tác')]")).getAttribute('value');
+
         //Click create 
         await this.driver.findElement(By.xpath('//*[@id="cdk-step-content-0-0"]/div/button')).click();
+
+        // Return merchant ID 
+
+        return mcID;
+
 
     }
 
@@ -252,9 +260,6 @@ class MerchantPage {
         await this.driver.wait(until.elementIsEnabled(continueButton), 1000);
         await this.driver.wait(until.elementIsVisible(continueButton), 1000);
         await continueButton.click();
-        // const loadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
-        // const loadingElement = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
-        // await this.driver.wait(until.stalenessOf(loadingElement), 10000);
     }
 
     async uploadDocument(documentType, imageURL) {
@@ -308,23 +313,73 @@ class MerchantPage {
 
         //Nhấn lưu 
         await this.driver.findElement(By.xpath('//*[@id="cdk-step-content-0-4"]/div/app-form-tich-hop/div[2]/button')).click();
+
+        const loadingElement2 = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
+        await this.driver.wait(until.stalenessOf(loadingElement2), 10000);
     }
 
     async navigateMerchantDetail(id) {
         this.navigate();
-        
 
+        //Search merchant by id 
         const searchInput = await this.driver.findElement(By.xpath("//input[contains(@placeholder, 'Số CIF')]"));
         await this.driver.wait(until.elementIsEnabled(searchInput), 2000);
         await this.driver.wait(until.elementIsVisible(searchInput), 2000);
+        await searchInput.click();
         await searchInput.sendKeys(id, Key.ENTER);
 
+        const loadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
+        const loadingElement = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
+        await this.driver.wait(until.stalenessOf(loadingElement), 10000);
 
+        // Get the first row
+        const firstRow = await this.driver.findElement(By.css('tbody > tr'));
+
+        // Click on the first row
+        await firstRow.click();
 
     }
 
-    async approvedMerchant() {
+    async sendApproveRequest() {
+        const approveButton = await this.driver.wait(until.elementLocated(By.xpath("//button[contains(span, 'Gửi duyệt')]")), 1000);
+        await this.driver.wait(until.elementIsEnabled(approveButton), 1000);
+        await approveButton.click();
 
+        const confirmButton = await this.driver.wait(until.elementLocated(By.xpath("//button[contains(span, 'Xác nhận')]")), 1000);
+        await this.driver.wait(until.elementIsEnabled(confirmButton), 1000);
+        await confirmButton.click();
+
+        const loadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
+        const loadingElement = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
+        await this.driver.wait(until.stalenessOf(loadingElement), 10000);
+    }
+
+    async approveMerchant() {
+        const approveButton = await this.driver.wait(until.elementLocated(By.xpath("//button[contains(span, 'Duyệt')]")), 1000);
+        await this.driver.wait(until.elementIsEnabled(approveButton), 1000);
+        await approveButton.click();
+
+        const confirmButton = await this.driver.wait(until.elementLocated(By.xpath("//button[contains(span, 'Xác nhận')]")), 1000);
+        await this.driver.wait(until.elementIsEnabled(confirmButton), 1000);
+        await confirmButton.click();
+
+        const loadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
+        const loadingElement = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
+        await this.driver.wait(until.stalenessOf(loadingElement), 10000);
+    }
+
+    async deleteMerchant() {
+        const approveButton = await this.driver.wait(until.elementLocated(By.xpath("//button[contains(span, 'Xóa')]")), 1000);
+        await this.driver.wait(until.elementIsEnabled(approveButton), 1000);
+        await approveButton.click();
+
+        const confirmButton = await this.driver.wait(until.elementLocated(By.xpath("//button[contains(span, 'Xác nhận')]")), 1000);
+        await this.driver.wait(until.elementIsEnabled(confirmButton), 1000);
+        await confirmButton.click();
+
+        const loadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
+        const loadingElement = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
+        await this.driver.wait(until.stalenessOf(loadingElement), 10000);
     }
 }
 

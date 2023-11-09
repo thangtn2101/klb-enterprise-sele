@@ -28,6 +28,7 @@ const { it } = require("mocha");
 describe('Merchant Module Tests', function () {
   let driver;
   let merchantPage;
+  let mcID;
 
 
   before(async function () {
@@ -70,8 +71,7 @@ describe('Merchant Module Tests', function () {
     const representEmail = companyData.representEmail;
     const isWhiteList = true;
 
-    //Step 1 
-    await merchantPage.createMCProfile(
+    mcID = await merchantPage.createMCProfile(
       merchantType,
       affiliate,
       merchantCif,
@@ -93,11 +93,10 @@ describe('Merchant Module Tests', function () {
     
     await driver.wait(until.stalenessOf(notification), 10000);
 
-
-
   });
 
   //Step 2
+  
   it('Add account successfully', async function () {
     //Start add account
     const accountSelect = companyData.account_no
@@ -202,6 +201,32 @@ describe('Merchant Module Tests', function () {
 
     const regExpObject = new RegExp("Success");
     assert.match(successMessage, regExpObject);
+    await driver.wait(until.stalenessOf(notification), 10000);
+
+  });
+
+  //Approve merchant 
+  it('Approve merchant successfully', async function(){
+
+    await merchantPage.navigateMerchantDetail(mcID);
+
+    await merchantPage.sendApproveRequest();
+
+    const regExpObject1 = new RegExp("Gửi duyệt thành công");
+    notification1 = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
+    successMessage1 = await notification1.getText();
+    assert.match(successMessage1, regExpObject1);
+    await driver.wait(until.stalenessOf(notification1), 10000);
+
+    await merchantPage.approveMerchant();
+
+    const regExpObject = new RegExp("Duyệt thành công");
+    notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
+    successMessage = await notification.getText();
+    assert.match(successMessage, regExpObject);
+
+    await driver.wait(until.stalenessOf(notification), 10000);
+    
   });
 
 
