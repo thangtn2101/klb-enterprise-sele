@@ -2,6 +2,7 @@ const { By, until } = require("selenium-webdriver");
 
 const assert = require("assert");
 
+const config = require('../utils/config.js');
 
 const LoginPage = require('../pages/LoginPage.js');
 
@@ -26,11 +27,11 @@ describe('Login Tests', function () {
     const username = config.adminUsername;
     const password = config.adminPassword; 
     
-    await loginPage.login(username, password);
+    await loginPage.loginForTest(username, password);
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
     // Add assertions to verify successful login
     var h4Element = await driver.wait(until.elementLocated(By.xpath("//div[@class='info']/h4")), 10000);
-    await new Promise(resolve => setTimeout(resolve, 2000));
 
     const welcomeMessage = await h4Element.getText();
 
@@ -44,8 +45,15 @@ describe('Login Tests', function () {
     const username = 'invalid_username';
     const password = 'invalid_password';
 
-    await loginPage.login(username, password);
-    assert.equal(1, 1);
+    await loginPage.loginForTest(username, password);
+    
+
+    const regExpObject = new RegExp("Đăng nhập không thành công, vui lòng thử lại.");
+    notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
+    message = await notification.getText();
+    assert.match(message, regExpObject);
+
+    await driver.wait(until.stalenessOf(notification), 10000);
 
   });
 });

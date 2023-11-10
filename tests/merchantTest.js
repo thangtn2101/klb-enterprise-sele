@@ -34,24 +34,22 @@ describe('Merchant Module Tests', function () {
   before(async function () {
     driver = await helper.initializeChromeDriver();
     merchantPage = new MerchantPage(driver);
-  }
-  );
 
-  after(async function () {
-    // await driver.quit();
-  });
-
-  //Step 1
-  it('Create merchant successfully', async function () {
     const loginPage = new LoginPage(driver);
-
     const username = config.adminUsername;
     const password = config.adminPassword;
     const adminName = config.adminName;
 
     await loginPage.login(username, password, adminName);
+  }
+  );
 
+  after(async function () {
+    await driver.quit();
+  });
 
+  //Step 1
+  it('Create merchant successfully', async function () {
     await merchantPage.navigate();
 
     const merchantType = companyData.type;
@@ -87,9 +85,9 @@ describe('Merchant Module Tests', function () {
     );
 
     const notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
-    const successMessage = await notification.getText();
+    const message = await notification.getText();
     const regExpObject = new RegExp("Khởi tạo đối tác thành công");
-    assert.match(successMessage, regExpObject);
+    assert.match(message, regExpObject);
     
     await driver.wait(until.stalenessOf(notification), 10000);
 
@@ -122,16 +120,16 @@ describe('Merchant Module Tests', function () {
     const regExpObject = new RegExp("Upload file thành công");
     let notification;
     let documentURL;
-    let successMessage;
+    let message;
 
     //Upload Giấy phép đăng ký kinh doanh
     documentURL = '/home/unicloud/Documents/PDF example/Size_8.9MB.pdf'
     await merchantPage.uploadDocument(DocEnum.BUSINESSLICENSE, documentURL)
 
     notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
-    successMessage = await notification.getText();
+    message = await notification.getText();
 
-    assert.match(successMessage, regExpObject, "Upload Giấy phép KD thất bại");
+    assert.match(message, regExpObject, "Upload Giấy phép KD thất bại");
     await driver.wait(until.stalenessOf(notification), 10000);
 
     //Upload Hợp đồng
@@ -139,9 +137,9 @@ describe('Merchant Module Tests', function () {
     await merchantPage.uploadDocument(DocEnum.BUSINESSCONTRACT, documentURL)
 
     notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
-    successMessage = await notification.getText();
+    message = await notification.getText();
 
-    assert.match(successMessage, regExpObject, "Upload Hợp đồng thất bại");
+    assert.match(message, regExpObject, "Upload Hợp đồng thất bại");
     await driver.wait(until.stalenessOf(notification), 10000);
 
     //Upload Giấy chứng nhận đại diện hợp pháp
@@ -149,9 +147,9 @@ describe('Merchant Module Tests', function () {
     await merchantPage.uploadDocument(DocEnum.LEGALCONTRACT, documentURL)
 
     notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
-    successMessage = await notification.getText();
+    message = await notification.getText();
 
-    assert.match(successMessage, regExpObject, "Upload Giấy chứng nhận đại diện thất bại");
+    assert.match(message, regExpObject, "Upload Giấy chứng nhận đại diện thất bại");
     await driver.wait(until.stalenessOf(notification), 10000);
 
     //Upload CMND mặt trước
@@ -159,9 +157,9 @@ describe('Merchant Module Tests', function () {
     await merchantPage.uploadDocument(DocEnum.FRONTID, documentURL)
 
     notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
-    successMessage = await notification.getText();
+    message = await notification.getText();
 
-    assert.match(successMessage, regExpObject, "Upload CMND mặt trước thất bại");
+    assert.match(message, regExpObject, "Upload CMND mặt trước thất bại");
     await driver.wait(until.stalenessOf(notification), 10000);
 
     //Upload CMND mặt sau
@@ -169,9 +167,9 @@ describe('Merchant Module Tests', function () {
     await merchantPage.uploadDocument(DocEnum.BACKID, documentURL)
 
     notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
-    successMessage = await notification.getText();
+    message = await notification.getText();
 
-    assert.match(successMessage, regExpObject, "Upload CMND mặt sau thất bại");
+    assert.match(message, regExpObject, "Upload CMND mặt sau thất bại");
     await driver.wait(until.stalenessOf(notification), 10000);
 
     //Upload giấy tờ khác 
@@ -179,9 +177,9 @@ describe('Merchant Module Tests', function () {
     await merchantPage.uploadDocument(DocEnum.ORTHERDOCUMENT, documentURL)
 
     notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
-    successMessage = await notification.getText();
+    message = await notification.getText();
 
-    assert.match(successMessage, regExpObject, "Upload giấy tờ khác thất bại");
+    assert.match(message, regExpObject, "Upload giấy tờ khác thất bại");
     await driver.wait(until.stalenessOf(notification), 10000);
 
     var continueButton = await driver.wait(until.elementLocated(By.xpath('//*[@id="cdk-step-content-0-3"]/div[2]/button[2]')), 1000);
@@ -197,15 +195,36 @@ describe('Merchant Module Tests', function () {
     const retryValue = '100'
     await merchantPage.generateIntergration(webhookURL, retryValue);
     notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
-    successMessage = await notification.getText();
+    message = await notification.getText();
 
     const regExpObject = new RegExp("Success");
-    assert.match(successMessage, regExpObject);
+    assert.match(message, regExpObject);
     await driver.wait(until.stalenessOf(notification), 10000);
 
   });
 
-  //Approve merchant 
+
+  it('Reject merchant successfully', async function(){
+    await merchantPage.navigateMerchantDetail(mcID);
+
+    await merchantPage.sendApproveRequest();
+
+    const regExpObject1 = new RegExp("Gửi duyệt thành công");
+    notification1 = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
+    message1 = await notification1.getText();
+    assert.match(message1, regExpObject1);
+    await driver.wait(until.stalenessOf(notification1), 10000);
+
+    await merchantPage.rejectMerchant();
+
+    const regExpObject = new RegExp("Từ chối duyệt thành công");
+    notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
+    message = await notification.getText();
+    assert.match(message, regExpObject);
+
+    await driver.wait(until.stalenessOf(notification), 10000);
+  });
+
   it('Approve merchant successfully', async function(){
 
     await merchantPage.navigateMerchantDetail(mcID);
@@ -214,16 +233,16 @@ describe('Merchant Module Tests', function () {
 
     const regExpObject1 = new RegExp("Gửi duyệt thành công");
     notification1 = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
-    successMessage1 = await notification1.getText();
-    assert.match(successMessage1, regExpObject1);
+    message1 = await notification1.getText();
+    assert.match(message1, regExpObject1);
     await driver.wait(until.stalenessOf(notification1), 10000);
 
     await merchantPage.approveMerchant();
 
     const regExpObject = new RegExp("Duyệt thành công");
     notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
-    successMessage = await notification.getText();
-    assert.match(successMessage, regExpObject);
+    message = await notification.getText();
+    assert.match(message, regExpObject);
 
     await driver.wait(until.stalenessOf(notification), 10000);
     

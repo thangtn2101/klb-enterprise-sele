@@ -4,20 +4,7 @@ const chrome = require("selenium-webdriver/chrome");
 
 const config = require('../utils/config.js');
 
-
-async function waitForInputValue(accountOwner, expectedValue, timeout) {
-  const start = Date.now();
-  while (Date.now() - start < timeout) {
-    const inputValue = await accountOwner.getAttribute('value');
-    if (inputValue === expectedValue) {
-      return true;
-    }
-    // Sleep for a short duration before checking again
-    await new Promise(resolve => setTimeout(resolve, 500));
-  }
-  return false; // Return false if the timeout is reached
-}
-
+const apiHost = 'https://api-flex-staging.kienlongbank.co/paygate/api'
 // Function to initialize the WebDriver with custom options and navigate to a URL
 async function initializeChromeDriver() {
   const chromeOptions = new chrome.Options();
@@ -44,12 +31,11 @@ async function getToken() {
       username: '343366'
     };
 
-    const response = await fetch('https://api-flex-staging.kienlongbank.co/paygate/api/auth/v1/cms/login', {
+    const response = await fetch(apiHost + '/auth/v1/cms/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': '*/*',
-        // Add other headers as needed
       },
       body: JSON.stringify(loginData),
     });
@@ -60,7 +46,7 @@ async function getToken() {
         return data.data.token;
       }
     }
-    throw new Error('Token not received in the response.');
+    throw new Error('Token not received in the response when response ok.');
 
   } catch (error) {
     throw new Error(error);
@@ -81,7 +67,7 @@ async function checkUsernameAvailability(username) {
   try {
     const token = await getToken();
 
-    const apiURL = 'https://api-flex-staging.kienlongbank.co/paygate/api/user/v1/cms/checkPortal?portalNumber=' + username;
+    const apiURL = apiHost+ '/user/v1/cms/checkPortal?portalNumber=' + username;
 
     const response = await fetch(apiURL, {
       method: 'GET',
@@ -103,9 +89,35 @@ async function checkUsernameAvailability(username) {
   }
 }
 
+async function getAllFee(feeName) {
+  try {
+    const token = await getToken();
+
+    const apiURL = apiHost + '/fee/v1/cms/getAll?page=0&size=10&feeName='+feeName+'&sort=createdDate,desc';
+
+    const response = await fetch(apiURL, {
+      method: 'GET',
+      headers: {
+        'accept': 'application/json, text/plain, */*',
+        'authorization': 'Bearer ' + token,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data) {
+        //Return a list of fee
+        return data.data.content;
+      }
+    }
+    throw new Error('Cannot get fee');
+  } catch (error) {
+    throw new Error(error);
+  }
+}
 module.exports = {
   initializeChromeDriver,
-  waitForInputValue,
   checkUsernameAvailability,
-  generateRandomString
+  generateRandomString,
+  getAllFee
 };

@@ -1,0 +1,429 @@
+{
+  "stats": {
+    "suites": 3,
+    "tests": 10,
+    "passes": 9,
+    "pending": 0,
+    "failures": 1,
+    "start": "2023-11-10T06:41:06.952Z",
+    "end": "2023-11-10T06:42:51.842Z",
+    "duration": 104890,
+    "testsRegistered": 10,
+    "passPercent": 90,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "b88000b2-6d23-4f61-964e-62c4af8c4427",
+      "title": "",
+      "fullFile": "",
+      "file": "",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "2dd1fcab-b7fd-41f5-9c46-e7883e85e2de",
+          "title": "Fee Module Tests",
+          "fullFile": "/home/unicloud/Documents/seleniumDemo/tests/feeTest.js",
+          "file": "/tests/feeTest.js",
+          "beforeHooks": [
+            {
+              "title": "\"before each\" hook in \"Fee Module Tests\"",
+              "fullTitle": "Fee Module Tests \"before each\" hook in \"Fee Module Tests\"",
+              "timedOut": false,
+              "duration": 2524,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "driver = await helper.initializeChromeDriver();\nfeePage = new FeePage(driver);",
+              "err": {},
+              "uuid": "926eee9c-bd74-495f-ad88-de894c107b4c",
+              "parentUUID": "2dd1fcab-b7fd-41f5-9c46-e7883e85e2de",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "afterHooks": [
+            {
+              "title": "\"after each\" hook in \"Fee Module Tests\"",
+              "fullTitle": "Fee Module Tests \"after each\" hook in \"Fee Module Tests\"",
+              "timedOut": false,
+              "duration": 52,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "await driver.quit();",
+              "err": {},
+              "uuid": "e4f30e97-1765-48bd-b5d9-157b9f41a142",
+              "parentUUID": "2dd1fcab-b7fd-41f5-9c46-e7883e85e2de",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "tests": [
+            {
+              "title": "Create fee successfully ",
+              "fullTitle": "Fee Module Tests Create fee successfully ",
+              "timedOut": false,
+              "duration": 3338,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "const loginPage = new LoginPage(driver);\n        const username = config.adminUsername;\n        const password = config.adminPassword;\n        await loginPage.login(username, password);",
+              "err": {
+                "message": "AssertionError: 'TRAN THANH TUNG' == undefined",
+                "estack": "AssertionError [ERR_ASSERTION]: 'TRAN THANH TUNG' == undefined\n    at LoginPage.login (pages/LoginPage.js:24:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async Context.<anonymous> (tests/feeTest.js:38:9)",
+                "diff": null
+              },
+              "uuid": "dcea807b-c498-4f03-926f-977955bda4d7",
+              "parentUUID": "2dd1fcab-b7fd-41f5-9c46-e7883e85e2de",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "dcea807b-c498-4f03-926f-977955bda4d7"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 3338,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 0
+        },
+        {
+          "uuid": "4b313aa9-3c97-4247-8639-97a2e8363280",
+          "title": "Login Tests",
+          "fullFile": "/home/unicloud/Documents/seleniumDemo/tests/loginTest.js",
+          "file": "/tests/loginTest.js",
+          "beforeHooks": [
+            {
+              "title": "\"before each\" hook in \"Login Tests\"",
+              "fullTitle": "Login Tests \"before each\" hook in \"Login Tests\"",
+              "timedOut": false,
+              "duration": 2656,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "driver = await helper.initializeChromeDriver();",
+              "err": {},
+              "uuid": "116212c2-c799-4162-8c39-913f18ce89e7",
+              "parentUUID": "4b313aa9-3c97-4247-8639-97a2e8363280",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "afterHooks": [
+            {
+              "title": "\"after each\" hook in \"Login Tests\"",
+              "fullTitle": "Login Tests \"after each\" hook in \"Login Tests\"",
+              "timedOut": false,
+              "duration": 51,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "await driver.quit();",
+              "err": {},
+              "uuid": "d84b3243-cc85-46bd-b034-78c85dd02dcc",
+              "parentUUID": "4b313aa9-3c97-4247-8639-97a2e8363280",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "tests": [
+            {
+              "title": "Login successfully",
+              "fullTitle": "Login Tests Login successfully",
+              "timedOut": false,
+              "duration": 2342,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const loginPage = new LoginPage(driver);\n    const username = config.adminUsername;\n    const password = config.adminPassword; \n    \n    await loginPage.loginForTest(username, password);\n    await new Promise(resolve => setTimeout(resolve, 2000));\n    // Add assertions to verify successful login\n    var h4Element = await driver.wait(until.elementLocated(By.xpath(\"//div[@class='info']/h4\")), 10000);\n    const welcomeMessage = await h4Element.getText();\n    assert.equal(welcomeMessage, config.adminName);",
+              "err": {},
+              "uuid": "d932ab28-9f1f-4da5-92fa-e6196a10121e",
+              "parentUUID": "4b313aa9-3c97-4247-8639-97a2e8363280",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Show error on invalid login",
+              "fullTitle": "Login Tests Show error on invalid login",
+              "timedOut": false,
+              "duration": 3972,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const loginPage = new LoginPage(driver);\nconst username = 'invalid_username';\nconst password = 'invalid_password';\nawait loginPage.loginForTest(username, password);\n\nconst regExpObject = new RegExp(\"Đăng nhập không thành công, vui lòng thử lại.\");\nnotification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);\nmessage = await notification.getText();\nassert.match(message, regExpObject);\nawait driver.wait(until.stalenessOf(notification), 10000);",
+              "err": {},
+              "uuid": "1b7a5b45-3e37-44e4-8a9d-3bed59ccbfdd",
+              "parentUUID": "4b313aa9-3c97-4247-8639-97a2e8363280",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "d932ab28-9f1f-4da5-92fa-e6196a10121e",
+            "1b7a5b45-3e37-44e4-8a9d-3bed59ccbfdd"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 6314,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 0
+        },
+        {
+          "uuid": "850424ea-85ed-4e63-a427-83c84c93e5c2",
+          "title": "Merchant Module Tests",
+          "fullFile": "/home/unicloud/Documents/seleniumDemo/tests/merchantTest.js",
+          "file": "/tests/merchantTest.js",
+          "beforeHooks": [
+            {
+              "title": "\"before all\" hook in \"Merchant Module Tests\"",
+              "fullTitle": "Merchant Module Tests \"before all\" hook in \"Merchant Module Tests\"",
+              "timedOut": false,
+              "duration": 8708,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "driver = await helper.initializeChromeDriver();\nmerchantPage = new MerchantPage(driver);",
+              "err": {},
+              "uuid": "cd86212c-9afc-49ca-bed7-705882a77ec2",
+              "parentUUID": "850424ea-85ed-4e63-a427-83c84c93e5c2",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "afterHooks": [
+            {
+              "title": "\"after all\" hook in \"Merchant Module Tests\"",
+              "fullTitle": "Merchant Module Tests \"after all\" hook in \"Merchant Module Tests\"",
+              "timedOut": false,
+              "duration": 53,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "await driver.quit();",
+              "err": {},
+              "uuid": "94edde29-a795-431e-addb-46b570d2bc50",
+              "parentUUID": "850424ea-85ed-4e63-a427-83c84c93e5c2",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "tests": [
+            {
+              "title": "Create merchant successfully",
+              "fullTitle": "Merchant Module Tests Create merchant successfully",
+              "timedOut": false,
+              "duration": 16529,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const loginPage = new LoginPage(driver);\nconst username = config.adminUsername;\nconst password = config.adminPassword;\nconst adminName = config.adminName;\nawait loginPage.login(username, password, adminName);\n\nawait merchantPage.navigate();\nconst merchantType = companyData.type;\nconst affiliate = companyData.affiliate;\nconst merchantCif = companyData.cif;\nconst companyName = companyData.companyName;\n\nconst limitPackageValue = PackageEnum.VIP;\nconst businessType = BusinessCateEnum.DICH_VU_AN_UONG;\nconst chargeTypeValue = ChargeTypeEnum.MONTHLY;\nconst repesentName = companyData.repesentName;\nconst repesentDoB = companyData.repesentDoB;\nconst sex = SexEnum.MALE;\nconst representEmail = companyData.representEmail;\nconst isWhiteList = true;\nmcID = await merchantPage.createMCProfile(\n  merchantType,\n  affiliate,\n  merchantCif,\n  companyName,\n  limitPackageValue,\n  businessType,\n  chargeTypeValue,\n  repesentName,\n  repesentDoB,\n  sex,\n  representEmail,\n  isWhiteList\n);\nconst notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);\nconst successMessage = await notification.getText();\nconst regExpObject = new RegExp(\"Khởi tạo đối tác thành công\");\nassert.match(successMessage, regExpObject);\n\nawait driver.wait(until.stalenessOf(notification), 10000);",
+              "err": {},
+              "uuid": "607a5129-ac62-47ae-b7f2-9446b6b73053",
+              "parentUUID": "850424ea-85ed-4e63-a427-83c84c93e5c2",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Add account successfully",
+              "fullTitle": "Merchant Module Tests Add account successfully",
+              "timedOut": false,
+              "duration": 9905,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "//Start add account\nconst accountSelect = companyData.account_no\nawait merchantPage.addAccountForMC(accountSelect);\n//Expected 3 account add successfully to Mc \nconst tableBody = await driver.findElement(By.css('tbody[role=\"rowgroup\"]'));\nconst rows = await tableBody.findElements(By.css('tr[role=\"row\"]'));\nassert.equal(rows.length, 3, \"Gán tài khoản thất bại\");",
+              "err": {},
+              "uuid": "179fbf3f-f7ab-406c-8d39-2cbb761ba2dd",
+              "parentUUID": "850424ea-85ed-4e63-a427-83c84c93e5c2",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Add MC Fee successfully",
+              "fullTitle": "Merchant Module Tests Add MC Fee successfully",
+              "timedOut": false,
+              "duration": 490,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "var continueButton = await driver.wait(until.elementLocated(By.xpath('//*[@id=\"cdk-step-content-0-2\"]/div/button[2]')), 1000);\nawait driver.wait(until.elementIsEnabled(continueButton), 1000);\nawait driver.wait(until.elementIsVisible(continueButton), 1000);\nawait continueButton.click();\nassert.equal(1, 1, \"Gán phí Thất bại\");",
+              "err": {},
+              "uuid": "49788b85-a65c-48a5-bce4-1cc82a32829e",
+              "parentUUID": "850424ea-85ed-4e63-a427-83c84c93e5c2",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Upload MC document successfully",
+              "fullTitle": "Merchant Module Tests Upload MC document successfully",
+              "timedOut": false,
+              "duration": 28968,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const regExpObject = new RegExp(\"Upload file thành công\");\nlet notification;\nlet documentURL;\nlet successMessage;\n//Upload Giấy phép đăng ký kinh doanh\ndocumentURL = '/home/unicloud/Documents/PDF example/Size_8.9MB.pdf'\nawait merchantPage.uploadDocument(DocEnum.BUSINESSLICENSE, documentURL)\nnotification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);\nsuccessMessage = await notification.getText();\nassert.match(successMessage, regExpObject, \"Upload Giấy phép KD thất bại\");\nawait driver.wait(until.stalenessOf(notification), 10000);\n//Upload Hợp đồng\ndocumentURL = '/home/unicloud/Pictures/Hop-dong.pdf'\nawait merchantPage.uploadDocument(DocEnum.BUSINESSCONTRACT, documentURL)\nnotification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);\nsuccessMessage = await notification.getText();\nassert.match(successMessage, regExpObject, \"Upload Hợp đồng thất bại\");\nawait driver.wait(until.stalenessOf(notification), 10000);\n//Upload Giấy chứng nhận đại diện hợp pháp\ndocumentURL = '/home/unicloud/Pictures/GIAY-PHEP-DKKD_001.jpg'\nawait merchantPage.uploadDocument(DocEnum.LEGALCONTRACT, documentURL)\nnotification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);\nsuccessMessage = await notification.getText();\nassert.match(successMessage, regExpObject, \"Upload Giấy chứng nhận đại diện thất bại\");\nawait driver.wait(until.stalenessOf(notification), 10000);\n//Upload CMND mặt trước\ndocumentURL = '/home/unicloud/Pictures/doggie_corgi-1280x600.jpg'\nawait merchantPage.uploadDocument(DocEnum.FRONTID, documentURL)\nnotification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);\nsuccessMessage = await notification.getText();\nassert.match(successMessage, regExpObject, \"Upload CMND mặt trước thất bại\");\nawait driver.wait(until.stalenessOf(notification), 10000);\n//Upload CMND mặt sau\ndocumentURL = '/home/unicloud/Pictures/Nengoro.full.2465602.jpg'\nawait merchantPage.uploadDocument(DocEnum.BACKID, documentURL)\nnotification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);\nsuccessMessage = await notification.getText();\nassert.match(successMessage, regExpObject, \"Upload CMND mặt sau thất bại\");\nawait driver.wait(until.stalenessOf(notification), 10000);\n//Upload giấy tờ khác \ndocumentURL = '/home/unicloud/Pictures/Facebook post 1.png'\nawait merchantPage.uploadDocument(DocEnum.ORTHERDOCUMENT, documentURL)\nnotification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);\nsuccessMessage = await notification.getText();\nassert.match(successMessage, regExpObject, \"Upload giấy tờ khác thất bại\");\nawait driver.wait(until.stalenessOf(notification), 10000);\nvar continueButton = await driver.wait(until.elementLocated(By.xpath('//*[@id=\"cdk-step-content-0-3\"]/div[2]/button[2]')), 1000);\nawait driver.wait(until.elementIsEnabled(continueButton), 1000);\nawait driver.wait(until.elementIsVisible(continueButton), 1000);\nawait continueButton.click();",
+              "err": {},
+              "uuid": "73145c9a-9ded-49b6-b165-cad67e2d9ce7",
+              "parentUUID": "850424ea-85ed-4e63-a427-83c84c93e5c2",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Generate integration Key",
+              "fullTitle": "Merchant Module Tests Generate integration Key",
+              "timedOut": false,
+              "duration": 5073,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const webhookURL = 'https://www.google.com/'\nconst retryValue = '100'\nawait merchantPage.generateIntergration(webhookURL, retryValue);\nnotification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);\nsuccessMessage = await notification.getText();\nconst regExpObject = new RegExp(\"Success\");\nassert.match(successMessage, regExpObject);\nawait driver.wait(until.stalenessOf(notification), 10000);",
+              "err": {},
+              "uuid": "7d5d98cf-ec86-42d1-82d4-af0e78ec4a31",
+              "parentUUID": "850424ea-85ed-4e63-a427-83c84c93e5c2",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Reject merchant successfully",
+              "fullTitle": "Merchant Module Tests Reject merchant successfully",
+              "timedOut": false,
+              "duration": 8985,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "await merchantPage.navigateMerchantDetail(mcID);\nawait merchantPage.sendApproveRequest();\nconst regExpObject1 = new RegExp(\"Gửi duyệt thành công\");\nnotification1 = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);\nsuccessMessage1 = await notification1.getText();\nassert.match(successMessage1, regExpObject1);\nawait driver.wait(until.stalenessOf(notification1), 10000);\nawait merchantPage.rejectMerchant();\nconst regExpObject = new RegExp(\"Từ chối duyệt thành công\");\nnotification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);\nsuccessMessage = await notification.getText();\nassert.match(successMessage, regExpObject);\nawait driver.wait(until.stalenessOf(notification), 10000);",
+              "err": {},
+              "uuid": "b9bdd5b0-ec89-41e2-9a42-446c188d6aa4",
+              "parentUUID": "850424ea-85ed-4e63-a427-83c84c93e5c2",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Approve merchant successfully",
+              "fullTitle": "Merchant Module Tests Approve merchant successfully",
+              "timedOut": false,
+              "duration": 8941,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "await merchantPage.navigateMerchantDetail(mcID);\n    await merchantPage.sendApproveRequest();\n    const regExpObject1 = new RegExp(\"Gửi duyệt thành công\");\n    notification1 = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);\n    successMessage1 = await notification1.getText();\n    assert.match(successMessage1, regExpObject1);\n    await driver.wait(until.stalenessOf(notification1), 10000);\n    await merchantPage.approveMerchant();\n    const regExpObject = new RegExp(\"Duyệt thành công\");\n    notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);\n    successMessage = await notification.getText();\n    assert.match(successMessage, regExpObject);\n    await driver.wait(until.stalenessOf(notification), 10000);",
+              "err": {},
+              "uuid": "16c43cf4-e69a-4ab0-86b2-46b78b40b413",
+              "parentUUID": "850424ea-85ed-4e63-a427-83c84c93e5c2",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "607a5129-ac62-47ae-b7f2-9446b6b73053",
+            "179fbf3f-f7ab-406c-8d39-2cbb761ba2dd",
+            "49788b85-a65c-48a5-bce4-1cc82a32829e",
+            "73145c9a-9ded-49b6-b165-cad67e2d9ce7",
+            "7d5d98cf-ec86-42d1-82d4-af0e78ec4a31",
+            "b9bdd5b0-ec89-41e2-9a42-446c188d6aa4",
+            "16c43cf4-e69a-4ab0-86b2-46b78b40b413"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 78891,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 0
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 0
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "10.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": null,
+      "version": "6.2.0"
+    }
+  }
+}

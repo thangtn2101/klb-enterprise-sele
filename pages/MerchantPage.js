@@ -15,6 +15,10 @@ class MerchantPage {
 
     async navigate() {
         await this.driver.get(config.host + '#/quan-ly-doi-tac/quan-ly-merchant');
+        const loadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
+        const loadingElement = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
+        await this.driver.wait(until.stalenessOf(loadingElement), 10000);
+
     }
 
     //step 1 
@@ -322,10 +326,9 @@ class MerchantPage {
         this.navigate();
 
         //Search merchant by id 
-        const searchInput = await this.driver.findElement(By.xpath("//input[contains(@placeholder, 'Số CIF')]"));
+        const searchInput = await this.driver.wait(until.elementLocated(By.xpath("//input[contains(@placeholder, 'Số CIF')]")), 10000);
         await this.driver.wait(until.elementIsEnabled(searchInput), 2000);
         await this.driver.wait(until.elementIsVisible(searchInput), 2000);
-        await searchInput.click();
         await searchInput.sendKeys(id, Key.ENTER);
 
         const loadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
@@ -372,6 +375,26 @@ class MerchantPage {
         const approveButton = await this.driver.wait(until.elementLocated(By.xpath("//button[contains(span, 'Xóa')]")), 1000);
         await this.driver.wait(until.elementIsEnabled(approveButton), 1000);
         await approveButton.click();
+
+        const confirmButton = await this.driver.wait(until.elementLocated(By.xpath("//button[contains(span, 'Xác nhận')]")), 1000);
+        await this.driver.wait(until.elementIsEnabled(confirmButton), 1000);
+        await confirmButton.click();
+
+        const loadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
+        const loadingElement = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
+        await this.driver.wait(until.stalenessOf(loadingElement), 10000);
+    }
+
+    async rejectMerchant() {
+        const rejectButton = await this.driver.wait(until.elementLocated(By.xpath("//button[contains(span, 'Từ chối')]")), 1000);
+        await this.driver.wait(until.elementIsEnabled(rejectButton), 1000);
+        await rejectButton.click();
+
+        
+        const rejectInput = await this.driver.wait(until.elementLocated(By.xpath("//textarea[contains(@placeholder, 'Nhập lý do từ chối')]")), 1000);
+        await this.driver.wait(until.elementIsEnabled(rejectInput), 1000);
+        await rejectInput.click();
+        await rejectInput.sendKeys("Từ chối tự động");
 
         const confirmButton = await this.driver.wait(until.elementLocated(By.xpath("//button[contains(span, 'Xác nhận')]")), 1000);
         await this.driver.wait(until.elementIsEnabled(confirmButton), 1000);

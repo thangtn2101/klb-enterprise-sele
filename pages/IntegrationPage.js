@@ -2,7 +2,7 @@ const { By, Key, until } = require("selenium-webdriver");
 const assert = require("assert");
 
 
-class LoginPage {
+class IntegrationPage {
   constructor(driver) {
     this.driver = driver;
   }
@@ -31,4 +31,4 @@ class LoginPage {
 }
 
 
-module.exports = LoginPage;
+module.exports = IntegrationPage;

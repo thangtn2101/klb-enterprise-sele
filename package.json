@@ -4,15 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --no-timeouts tests/login.js",
-    "test-mc":"mocha --no-timeouts tests/merchantTest.js"
+    "test": "mocha --no-timeouts tests/ --reporter mochawesome",
+    "test-login": "mocha --no-timeouts tests/loginTest.js",
+    "test-mc": "mocha --no-timeouts tests/merchantTest.js",
+    "test-fee": "mocha --no-timeouts tests/feeTest.js"
   },
-  "author": "",
+  "author": "Tran Ngoc Thang",
   "license": "ISC",
   "dependencies": {
     "selenium-webdriver": "^4.12.0"
   },
   "devDependencies": {
-    "mocha": "^10.2.0"
+    "mocha": "^10.2.0",
+    "mochawesome": "^7.1.3"
   }
 }
