@@ -49,7 +49,7 @@ describe('Merchant Module Tests', function () {
   });
 
   //Step 1
-  it('Create merchant successfully', async function () {
+  it('[Happy Case] Create merchant successfully', async function () {
     await merchantPage.navigate();
 
     const merchantType = companyData.type;
@@ -95,7 +95,7 @@ describe('Merchant Module Tests', function () {
 
   //Step 2
   
-  it('Add account successfully', async function () {
+  it('[Happy Case] Add account successfully', async function () {
     //Start add account
     const accountSelect = companyData.account_no
     await merchantPage.addAccountForMC(accountSelect);
@@ -107,7 +107,7 @@ describe('Merchant Module Tests', function () {
   });
 
   //Step 3
-  it('Add MC Fee successfully', async function () {
+  it('[Happy Case] Add MC Fee successfully', async function () {
     var continueButton = await driver.wait(until.elementLocated(By.xpath('//*[@id="cdk-step-content-0-2"]/div/button[2]')), 1000);
     await driver.wait(until.elementIsEnabled(continueButton), 1000);
     await driver.wait(until.elementIsVisible(continueButton), 1000);
@@ -116,7 +116,7 @@ describe('Merchant Module Tests', function () {
   });
 
   //Step 4 
-  it('Upload MC document successfully', async function () {
+  it('[Happy Case] Upload MC document successfully', async function () {
     const regExpObject = new RegExp("Upload file thành công");
     let notification;
     let documentURL;
@@ -190,7 +190,7 @@ describe('Merchant Module Tests', function () {
   });
 
   //Step 5
-  it('Generate integration Key', async function () {
+  it('[Happy Case] Generate integration Key', async function () {
     const webhookURL = 'https://www.google.com/'
     const retryValue = '100'
     await merchantPage.generateIntergration(webhookURL, retryValue);
@@ -204,7 +204,7 @@ describe('Merchant Module Tests', function () {
   });
 
 
-  it('Reject merchant successfully', async function(){
+  it('[Happy Case] Reject merchant successfully', async function(){
     await merchantPage.navigateMerchantDetail(mcID);
 
     await merchantPage.sendApproveRequest();
@@ -225,7 +225,7 @@ describe('Merchant Module Tests', function () {
     await driver.wait(until.stalenessOf(notification), 10000);
   });
 
-  it('Approve merchant successfully', async function(){
+  it('[Happy Case] Approve merchant successfully', async function(){
 
     await merchantPage.navigateMerchantDetail(mcID);
 

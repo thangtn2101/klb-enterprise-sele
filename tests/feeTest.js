@@ -36,9 +36,66 @@ describe('Fee Module Tests', function () {
         await driver.quit();
     });
 
-    it('Create fee successfully ', async function () {
+    it('[Happy Case]Create COBO FREE FEE successfully', async function () {
+        //Navigate to fee 
+        await feePage.navigate();
 
+        const feeType = 'Thu hộ' 
+        const vat = 10;
+        const feeMethod = 'Miễn phí'
 
+        await feePage.createFee(feeType, vat, feeMethod);
+
+        const notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
+        const message = await notification.getText();
+    
+        const regExpObject = new RegExp("Success");
+        assert.match(message, regExpObject);
+        await driver.wait(until.stalenessOf(notification), 10000);
+    });
+
+    it('[Happy Case] Create COBO FIXED FEE WITH PRICES successfully', async function () {
+        //Navigate to fee 
+        await feePage.navigate();
+        
+        //fee data 
+        const feeType = 'Thu hộ' 
+        const vat = 10;
+        const feeMethod = 'Phí cố định'
+        const feeRule = 'Số tiền phí cố định'
+        const value = 1500
+
+        //Create fee
+        await feePage.createFee(feeType, vat, feeMethod, feeRule, value);
+
+        const notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
+        const message = await notification.getText();
+    
+        const regExpObject = new RegExp("Success");
+        assert.match(message, regExpObject);
+        await driver.wait(until.stalenessOf(notification), 10000);
+    });
+
+    it('[Happy Case] Create COBO FIXED FEE WITH PERCENT successfully', async function () {
+        //Navigate to fee 
+        await feePage.navigate();
+        
+        //fee data 
+        const feeType = 'Thu hộ' 
+        const vat = 10;
+        const feeMethod = 'Phí cố định'
+        const feeRule = 'Số tiền phí theo tỷ lệ %'
+        const value = 10
+
+        //Create fee
+        await feePage.createFee(feeType, vat, feeMethod, feeRule, value);
+
+        const notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
+        const message = await notification.getText();
+    
+        const regExpObject = new RegExp("Success");
+        assert.match(message, regExpObject);
+        await driver.wait(until.stalenessOf(notification), 10000);
     });
 
 });

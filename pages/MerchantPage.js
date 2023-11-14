@@ -15,10 +15,7 @@ class MerchantPage {
 
     async navigate() {
         await this.driver.get(config.host + '#/quan-ly-doi-tac/quan-ly-merchant');
-        const loadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
-        const loadingElement = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
-        await this.driver.wait(until.stalenessOf(loadingElement), 10000);
-
+        await helper.waitLoadingStale(this.driver);
     }
 
     //step 1 
@@ -48,9 +45,7 @@ class MerchantPage {
         const cifCheckButtonPath = "/html[1]/body[1]/app-dashboard[1]/div[1]/main[1]/div[2]/app-content-layout[1]/div[1]/div[1]/app-form-merchant[1]/div[2]/mat-horizontal-stepper[1]/div[2]/div[1]/form[1]/div[1]/div[6]/mat-form-field[1]/div[1]/div[1]/div[1]/button[1]"
         await this.driver.findElement(By.xpath(cifCheckButtonPath)).click();
 
-        const loadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
-        const loadingElement = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
-        await this.driver.wait(until.stalenessOf(loadingElement), 10000);
+        await helper.waitLoadingStale(this.driver);
 
 
         //Đợi CIf hợp lệ 
@@ -101,8 +96,6 @@ class MerchantPage {
         var businessCateValue = await this.driver.wait(until.elementLocated(By.id(businessType)), 10000);
         await businessCateValue.click();
 
-
-
         //Nhập username mới
         let isExisted = true;
         let username;
@@ -122,8 +115,7 @@ class MerchantPage {
         const repesentNameEle = await this.driver.findElement(By.id('mat-input-4'));
         await repesentNameEle.click();
 
-        const loadingElement1 = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
-        await this.driver.wait(until.stalenessOf(loadingElement1), 10000);
+        await helper.waitLoadingStale(this.driver);
 
         await repesentNameEle.clear();
         await repesentNameEle.sendKeys("[Đại diện]" + repesentName);
@@ -199,10 +191,7 @@ class MerchantPage {
         await this.driver.findElement(By.xpath('//*[@id="cdk-step-content-0-0"]/div/button')).click();
 
         // Return merchant ID 
-
         return mcID;
-
-
     }
 
     //step 2 
@@ -221,10 +210,7 @@ class MerchantPage {
             await this.driver.wait(until.elementIsVisible(addAccount), 5000);
             await this.driver.wait(until.elementIsEnabled(addAccount), 5000);
             await addAccount.click();
-
-            const loadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
-            const loadingElement = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
-            await this.driver.wait(until.stalenessOf(loadingElement), 10000);
+            await helper.waitLoadingStale(this.driver);
 
             //Nhấn vào dropdown Chọn lọai TK 
             let accountTypeDropPath = "//div[contains(span,'Loại tài khoản')]";
@@ -252,10 +238,7 @@ class MerchantPage {
             await addAccountNumValue.click();
 
             await this.driver.findElement(By.xpath("//span[contains(text(),'Lưu')]")).click();
-
-            const saveLoadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
-            const saveLoadingElement = await this.driver.wait(until.elementLocated(By.xpath(saveLoadingPath)), 10000);
-            await this.driver.wait(until.stalenessOf(saveLoadingElement), 10000);
+            await helper.waitLoadingStale(this.driver);
 
         }
 
@@ -270,9 +253,7 @@ class MerchantPage {
         var uploadButton = await this.driver.wait(until.elementLocated(By.xpath(documentType)), 1000);
         await this.driver.wait(until.elementIsEnabled(uploadButton), 1000);
         await uploadButton.sendKeys(imageURL)
-        const loadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
-        const loadingElement = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
-        await this.driver.wait(until.stalenessOf(loadingElement), 10000);
+        await helper.waitLoadingStale(this.driver);
     }
 
     async generateIntergration(webhookURL, retryValue) {
@@ -289,20 +270,14 @@ class MerchantPage {
         await this.driver.wait(until.elementIsEnabled(genEKeyButton), 1000);
         await this.driver.wait(until.elementIsVisible(genEKeyButton), 1000);
         await genEKeyButton.click();
-
-        const loadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
-        const loadingElement = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
-        await this.driver.wait(until.stalenessOf(loadingElement), 10000);
-
+        await helper.waitLoadingStale(this.driver);
 
         const genSKeyButtonPath = '//*[@id="cdk-step-content-0-4"]/div/app-form-tich-hop/form/div[2]/div[8]/div/mat-form-field/div/div[1]/div/button'
         var genSKeyButton = await this.driver.wait(until.elementLocated(By.xpath(genSKeyButtonPath)), 1000);
         await this.driver.wait(until.elementIsEnabled(genSKeyButton), 1000);
         await this.driver.wait(until.elementIsVisible(genSKeyButton), 1000);
         await genSKeyButton.click();
-
-        const loadingElement1 = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
-        await this.driver.wait(until.stalenessOf(loadingElement1), 10000);
+        await helper.waitLoadingStale(this.driver);
 
         await this.driver.findElement(By.id('mat-input-17'))
             .getAttribute('value').then(textValue => {
@@ -317,9 +292,7 @@ class MerchantPage {
 
         //Nhấn lưu 
         await this.driver.findElement(By.xpath('//*[@id="cdk-step-content-0-4"]/div/app-form-tich-hop/div[2]/button')).click();
-
-        const loadingElement2 = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
-        await this.driver.wait(until.stalenessOf(loadingElement2), 10000);
+        await helper.waitLoadingStale(this.driver);
     }
 
     async navigateMerchantDetail(id) {
@@ -331,9 +304,7 @@ class MerchantPage {
         await this.driver.wait(until.elementIsVisible(searchInput), 2000);
         await searchInput.sendKeys(id, Key.ENTER);
 
-        const loadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
-        const loadingElement = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
-        await this.driver.wait(until.stalenessOf(loadingElement), 10000);
+        await helper.waitLoadingStale(this.driver);
 
         // Get the first row
         const firstRow = await this.driver.findElement(By.css('tbody > tr'));
@@ -351,10 +322,7 @@ class MerchantPage {
         const confirmButton = await this.driver.wait(until.elementLocated(By.xpath("//button[contains(span, 'Xác nhận')]")), 1000);
         await this.driver.wait(until.elementIsEnabled(confirmButton), 1000);
         await confirmButton.click();
-
-        const loadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
-        const loadingElement = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
-        await this.driver.wait(until.stalenessOf(loadingElement), 10000);
+        await helper.waitLoadingStale(this.driver);
     }
 
     async approveMerchant() {
@@ -365,10 +333,7 @@ class MerchantPage {
         const confirmButton = await this.driver.wait(until.elementLocated(By.xpath("//button[contains(span, 'Xác nhận')]")), 1000);
         await this.driver.wait(until.elementIsEnabled(confirmButton), 1000);
         await confirmButton.click();
-
-        const loadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
-        const loadingElement = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
-        await this.driver.wait(until.stalenessOf(loadingElement), 10000);
+        await helper.waitLoadingStale(this.driver);
     }
 
     async deleteMerchant() {
@@ -379,10 +344,7 @@ class MerchantPage {
         const confirmButton = await this.driver.wait(until.elementLocated(By.xpath("//button[contains(span, 'Xác nhận')]")), 1000);
         await this.driver.wait(until.elementIsEnabled(confirmButton), 1000);
         await confirmButton.click();
-
-        const loadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
-        const loadingElement = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
-        await this.driver.wait(until.stalenessOf(loadingElement), 10000);
+        await helper.waitLoadingStale(this.driver);
     }
 
     async rejectMerchant() {
@@ -390,21 +352,16 @@ class MerchantPage {
         await this.driver.wait(until.elementIsEnabled(rejectButton), 1000);
         await rejectButton.click();
 
-        
         const rejectInput = await this.driver.wait(until.elementLocated(By.xpath("//textarea[contains(@placeholder, 'Nhập lý do từ chối')]")), 1000);
         await this.driver.wait(until.elementIsEnabled(rejectInput), 1000);
         await rejectInput.click();
-        await rejectInput.sendKeys("Từ chối tự động");
+        await rejectInput.sendKeys("Từ chối đối tác tự động");
 
         const confirmButton = await this.driver.wait(until.elementLocated(By.xpath("//button[contains(span, 'Xác nhận')]")), 1000);
         await this.driver.wait(until.elementIsEnabled(confirmButton), 1000);
         await confirmButton.click();
-
-        const loadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
-        const loadingElement = await this.driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
-        await this.driver.wait(until.stalenessOf(loadingElement), 10000);
+        await helper.waitLoadingStale(this.driver);
     }
 }
-
 
 module.exports = MerchantPage;

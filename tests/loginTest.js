@@ -21,7 +21,7 @@ describe('Login Tests', function () {
     await driver.quit();
   });
 
-  it('Login successfully', async function () {
+  it('[Happy Case] Login successfully', async function () {
 
     const loginPage = new LoginPage(driver);
     const username = config.adminUsername;

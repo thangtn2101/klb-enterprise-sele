@@ -1,4 +1,4 @@
-const { Builder } = require("selenium-webdriver");
+const { Builder, until, By} = require("selenium-webdriver");
 
 const chrome = require("selenium-webdriver/chrome");
 
@@ -54,7 +54,7 @@ async function getToken() {
 }
 
 function generateRandomString(length) {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let randomString = '';
   for (let i = 0; i < length; i++) {
     const randomIndex = Math.floor(Math.random() * characters.length);
@@ -89,11 +89,16 @@ async function checkUsernameAvailability(username) {
   }
 }
 
-async function getAllFee(feeName) {
+async function getAllFeeBy(feeCode,feeName) {
   try {
     const token = await getToken();
-
-    const apiURL = apiHost + '/fee/v1/cms/getAll?page=0&size=10&feeName='+feeName+'&sort=createdDate,desc';
+    let apiURL = apiHost + '/fee/v1/cms/getAll?page=0&size=10';
+    if(feeCode && feeCode.trim() !== ''){
+      apiURL += '&feeCode=' + encodeURIComponent(feeCode);
+    }
+    if (feeName && feeName.trim() !== '') {
+      apiURL += '&feeName=' + encodeURIComponent(feeName);
+    }
 
     const response = await fetch(apiURL, {
       method: 'GET',
@@ -107,17 +112,41 @@ async function getAllFee(feeName) {
       const data = await response.json();
       if (data) {
         //Return a list of fee
+        console.log(data.data.content);
         return data.data.content;
       }
     }
-    throw new Error('Cannot get fee');
+    throw new Error('Cannot get fee when request is '+ apiURL);
   } catch (error) {
     throw new Error(error);
   }
 }
+
+
+const prefixes = ["Phúc", "Hòa", "Đông", "Minh", "Xanh", "Song", "Vinh", "Thanh", "Tiến", "Vinamilk", "Hà Nội", "Vingroup", "TGDD", "Cửu Long"];
+const suffixes = ["Co.", "Ltd.", "Group", "Tech", "Solutions", "Systems", "Partners", "Bank", "Tập đoàn"];
+
+function generateCompanyName() {
+  const randomPrefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+  const randomSuffix = suffixes[Math.floor(Math.random() * suffixes.length)];
+
+  const companyName = `${randomPrefix} ${randomSuffix}`;
+
+  return companyName;
+}
+
+async function waitLoadingStale(driver){
+  const loadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
+  const loadingElement = await driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
+  await driver.wait(until.stalenessOf(loadingElement), 10000);
+}
+
+
 module.exports = {
   initializeChromeDriver,
   checkUsernameAvailability,
   generateRandomString,
-  getAllFee
+  getAllFeeBy,
+  generateCompanyName,
+  waitLoadingStale
 };
