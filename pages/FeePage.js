@@ -15,6 +15,25 @@ class FeePage {
         await this.driver.get(config.host + '#/quan-ly-doi-tac/thiet-lap-bieu-phi');
     }
 
+    async navigateFeeDetailByCode(code) {
+        this.navigate();
+
+        //Search merchant by id 
+        const searchCodeInput = await this.driver.wait(until.elementLocated(By.xpath("//input[contains(@formcontrolname, 'feeCode')]")), 10000);
+        await this.driver.wait(until.elementIsEnabled(searchCodeInput), 2000);
+        await this.driver.wait(until.elementIsVisible(searchCodeInput), 2000);
+        await searchCodeInput.sendKeys(code, Key.ENTER);
+
+        await helper.waitLoadingStale(this.driver);
+
+        // Get the first row
+        const firstRow = await this.driver.findElement(By.css('tbody > tr'));
+
+        // Click on the first row
+        await firstRow.click();
+        await helper.waitLoadingStale(this.driver);
+    }
+
     async createFee(feeType, vat, feeMethod, feeRule, value) {
         //Click on button "Thêm mới"
         const addFeeBTPath = "//button[contains(span, 'Thêm mới')]";
@@ -133,6 +152,8 @@ class FeePage {
         }
         await this.driver.findElement(By.xpath("//span[contains(text(),'Lưu')]")).click();
         await helper.waitLoadingStale(this.driver);
+
+        return feeCode;
     }
 
     async approveFee(){
@@ -154,7 +175,7 @@ class FeePage {
         const rejectInput = await this.driver.wait(until.elementLocated(By.xpath("//textarea[contains(@placeholder, 'Nhập lý do từ chối')]")), 1000);
         await this.driver.wait(until.elementIsEnabled(rejectInput), 1000);
         await rejectInput.click();
-        await rejectInput.sendKeys("Từ chối đối tác tự động");
+        await rejectInput.sendKeys("Từ chối phí tự động");
 
         const confirmButton = await this.driver.wait(until.elementLocated(By.xpath("//button[contains(span, 'Xác nhận')]")), 1000);
         await this.driver.wait(until.elementIsEnabled(confirmButton), 1000);
@@ -162,7 +183,26 @@ class FeePage {
         await helper.waitLoadingStale(this.driver);
     }
 
+    async editFeeVAT(vat) {
+        //Click on button "Chỉnh sửa"
+        const editFeeBTPath = "//button[contains(span, 'Chỉnh sửa')]";
+        const editFeeBT = await this.driver.wait(until.elementLocated(By.xpath(editFeeBTPath)), 5000);
+        await this.driver.wait(until.elementIsVisible(editFeeBT), 5000);
+        await this.driver.wait(until.elementIsEnabled(editFeeBT), 5000);
+        await editFeeBT.click();
 
+        //Insert VAT value 
+        const feeVATInputPath = "//input[contains(@data-placeholder, 'Nhập % VAT')]"
+        const feeVATInput = await this.driver.findElement(By.xpath(feeVATInputPath));
+        await this.driver.wait(until.elementIsEnabled(feeVATInput), 2000);
+        await this.driver.wait(until.elementIsVisible(feeVATInput), 2000);
+        await feeVATInput.click();
+        await feeVATInput.clear();
+        await feeVATInput.sendKeys(vat);
+
+        await this.driver.findElement(By.xpath("//span[contains(text(),'Lưu')]")).click();
+        await helper.waitLoadingStale(this.driver);
+    }  
 }
 
 

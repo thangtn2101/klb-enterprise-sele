@@ -194,6 +194,7 @@ describe('Merchant Module Tests', function () {
     const webhookURL = 'https://www.google.com/'
     const retryValue = '100'
     await merchantPage.generateIntergration(webhookURL, retryValue);
+    
     notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
     message = await notification.getText();
 
@@ -247,8 +248,5 @@ describe('Merchant Module Tests', function () {
     await driver.wait(until.stalenessOf(notification), 10000);
     
   });
-
-
-
 
 });

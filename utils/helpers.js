@@ -112,7 +112,6 @@ async function getAllFeeBy(feeCode,feeName) {
       const data = await response.json();
       if (data) {
         //Return a list of fee
-        console.log(data.data.content);
         return data.data.content;
       }
     }
