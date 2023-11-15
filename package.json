@@ -7,7 +7,8 @@
     "test": "mocha --no-timeouts tests/ --reporter mochawesome",
     "test-login": "mocha --no-timeouts tests/loginTest.js",
     "test-mc": "mocha --no-timeouts tests/merchantTest.js",
-    "test-fee": "mocha --no-timeouts tests/feeTest.js"
+    "test-fee": "mocha --no-timeouts tests/feeTest.js",
+    "test-and-push": "npm run test ; git add . ; git commit -m \"Run Mocha tests\" ; git push"
   },
   "author": "Tran Ngoc Thang",
   "license": "ISC",

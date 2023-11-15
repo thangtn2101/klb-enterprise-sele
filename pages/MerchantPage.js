@@ -56,7 +56,7 @@ class MerchantPage {
 
         const defaultNullValue = "---"
 
-        assert.notEqual(mcInfoEText, defaultNullValue);
+        assert.notEqual(mcInfoEText, defaultNullValue,"Get merchant from core fail");
 
         //Thay đổi tên công ty
         const merchantNamePath = "mat-input-1"
