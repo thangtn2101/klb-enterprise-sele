@@ -77,7 +77,7 @@ class FeePage {
         let feeName;
 
         while (isFeeNameExisted) {
-            feeName = "[AUTO-TEST] " + helper.generateCompanyName();
+            feeName = "[AUTO] " + helper.generateCompanyName() + " " + helper.generateRandomString(3);
             const feesResult = await helper.getAllFeeBy(null, feeName);
             if (feesResult.length === 0) {
                 isFeeNameExisted = false;
