@@ -1,0 +1,43 @@
+variables:
+  IMAGE_NAME: ksb/auto-test-klbpe-cms
+  TAG: latest
+  CLUSTER_NAME: k8s-dev
+  CLUSTER_USER: local
+  ENV: dev
+  SERVICE_NAME: auto-test-klbpe-cms
+
+build:
+  image:
+    name: registry.dev.kienlongbank.co/utils/auto-ci:v1.23.0
+    entrypoint: [""]
+  before_script:
+    - export $ENV_KLB_DEV
+    - export $REGISTRY_CONFIG
+
+    - echo $UCR_SECRET | base64 --decode | docker login $UCR_REGISTRY --username $UCR_USER --password-stdin
+    - kubectl config set-cluster $CLUSTER_NAME --server $CLUSTER_ENDPOINT --insecure-skip-tls-verify=true
+    - kubectl config set-credentials $CLUSTER_USER --token=$(echo $TOKEN | base64 -d)
+    - kubectl config set-context main --cluster $CLUSTER_NAME --user $CLUSTER_USER --namespace $NAMESPACE
+    - kubectl config use-context main
+
+  script:
+    - docker build $CI_PROJECT_DIR -t $UCR_REGISTRY/$IMAGE_NAME:$TAG
+    - docker push $UCR_REGISTRY/$IMAGE_NAME:$TAG
+
+    - echo -e "$GIT_SSH_KEY"|base64 --decode  > ~/.ssh/id_rsa
+    - rm -rf ~/.ssh/id_rsa.pub
+    - chmod 600 ~/.ssh/id_rsa
+
+    - git clone -b $CHART_BRANCH --depth 1 $CHART_GIT_SSH_URL /workspace
+    - cd /workspace
+
+    - chmod +x ./scripts/$ENV/ci-ucr.sh && ./scripts/$ENV/ci-ucr.sh
+
+    - helm repo add basechart $CHART_URL && helm repo update
+    - helm upgrade --install  $SERVICE_NAME $CHART_DIR -n $NAMESPACE -f values/$SERVICE_NAME.yaml
+  tags:
+    - shared-docker-runner
+
+
+
+
