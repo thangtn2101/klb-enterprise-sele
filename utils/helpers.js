@@ -24,6 +24,7 @@ async function initializeChromeDriver() {
   return driver; // Return the initialized driver
 }
 
+
 async function getToken() {
   try {
     const loginData = {
@@ -140,6 +141,14 @@ async function waitLoadingStale(driver){
   await driver.wait(until.stalenessOf(loadingElement), 10000);
 }
 
+async function clickOnEditButton(driver) {
+  const editFeeBTPath = "//button[contains(span, 'Chỉnh sửa')]";
+  const editFeeBT = await driver.wait(until.elementLocated(By.xpath(editFeeBTPath)), 5000);
+  await driver.wait(until.elementIsVisible(editFeeBT), 5000);
+  await driver.wait(until.elementIsEnabled(editFeeBT), 5000);
+  await editFeeBT.click();
+}
+
 
 module.exports = {
   initializeChromeDriver,
@@ -147,5 +156,6 @@ module.exports = {
   generateRandomString,
   getAllFeeBy,
   generateCompanyName,
-  waitLoadingStale
+  waitLoadingStale,
+  clickOnEditButton
 };

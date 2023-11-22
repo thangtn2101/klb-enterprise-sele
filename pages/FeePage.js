@@ -15,6 +15,11 @@ class FeePage {
         await this.driver.get(config.host + '#/quan-ly-doi-tac/thiet-lap-bieu-phi');
     }
 
+    async navigateEditPageByURL(){
+        const currentUrl = await this.driver.getCurrentUrl();
+        await this.driver.get(currentUrl + "/chinh-sua");
+    }
+
     async navigateFeeDetailByCode(code) {
         this.navigate();
 
@@ -238,13 +243,6 @@ class FeePage {
     }
 
     async editFeeVAT(vat) {
-        //Click on button "Chỉnh sửa"
-        const editFeeBTPath = "//button[contains(span, 'Chỉnh sửa')]";
-        const editFeeBT = await this.driver.wait(until.elementLocated(By.xpath(editFeeBTPath)), 5000);
-        await this.driver.wait(until.elementIsVisible(editFeeBT), 5000);
-        await this.driver.wait(until.elementIsEnabled(editFeeBT), 5000);
-        await editFeeBT.click();
-
         //Insert VAT value 
         const feeVATInputPath = "//input[contains(@data-placeholder, 'Nhập % VAT')]"
         const feeVATInput = await this.driver.findElement(By.xpath(feeVATInputPath));
@@ -253,6 +251,19 @@ class FeePage {
         await feeVATInput.click();
         await feeVATInput.clear();
         await feeVATInput.sendKeys(vat);
+
+        await this.driver.findElement(By.xpath("//span[contains(text(),'Lưu')]")).click();
+        await helper.waitLoadingStale(this.driver);
+    }
+
+    async editFeeName(feeName) {
+        const feeNameInputPath = "//input[contains(@data-placeholder, 'Nhập Tên phí')]"
+        const feeNameInput = await this.driver.findElement(By.xpath(feeNameInputPath));
+        await this.driver.wait(until.elementIsEnabled(feeNameInput), 2000);
+        await this.driver.wait(until.elementIsVisible(feeNameInput), 2000);
+        await feeNameInput.click();
+        await feeNameInput.clear();
+        await feeNameInput.sendKeys(feeName);
 
         await this.driver.findElement(By.xpath("//span[contains(text(),'Lưu')]")).click();
         await helper.waitLoadingStale(this.driver);

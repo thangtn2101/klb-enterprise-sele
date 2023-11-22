@@ -69,9 +69,9 @@ describe('Fee Module Tests', function () {
         await driver.wait(until.stalenessOf(notification), 10000);
     });
     it('[Happy Case] Edit COBO FREE FEE successfully', async function () {
-        //Navigate to fee detail by code
-        await feePage.navigateFeeDetailByCode(feeCode);
         const vat = 5;
+        await feePage.navigateFeeDetailByCode(feeCode);
+        await helper.clickOnEditButton(driver);
         await feePage.editFeeVAT(vat);
 
         const notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
@@ -131,8 +131,10 @@ describe('Fee Module Tests', function () {
     });
     it('[Happy Case] Edit COBO FIXED FEE WITH PRICES successfully', async function () {
         //Navigate to fee detail by code
-        await feePage.navigateFeeDetailByCode(feeCode);
         const vat = 5;
+
+        await feePage.navigateFeeDetailByCode(feeCode);
+        await helper.clickOnEditButton(driver);
         await feePage.editFeeVAT(vat);
 
         const notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
@@ -192,9 +194,10 @@ describe('Fee Module Tests', function () {
         await driver.wait(until.stalenessOf(notification), 10000);
     });
     it('[Happy Case] Edit COBO FIXED FEE WITH PERCENT successfully', async function () {
-        //Navigate to fee detail by code
-        await feePage.navigateFeeDetailByCode(feeCode);
         const vat = 5;
+
+        await feePage.navigateFeeDetailByCode(feeCode);
+        await helper.clickOnEditButton(driver);
         await feePage.editFeeVAT(vat);
 
         const notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
@@ -251,8 +254,10 @@ describe('Fee Module Tests', function () {
     });
     it('[Happy Case] Edit POBO FREE FEE successfully', async function () {
         //Navigate to fee detail by code
-        await feePage.navigateFeeDetailByCode(feeCode);
         const vat = 5;
+
+        await feePage.navigateFeeDetailByCode(feeCode);
+        await helper.clickOnEditButton(driver);
         await feePage.editFeeVAT(vat);
 
         const notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
@@ -311,9 +316,10 @@ describe('Fee Module Tests', function () {
         await driver.wait(until.stalenessOf(notification), 10000);
     });
     it('[Happy Case] Edit POBO FIXED FEE WITH PRICES successfully', async function () {
-        //Navigate to fee detail by code
-        await feePage.navigateFeeDetailByCode(feeCode);
         const vat = 5;
+
+        await feePage.navigateFeeDetailByCode(feeCode);
+        await helper.clickOnEditButton(driver);
         await feePage.editFeeVAT(vat);
 
         const notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
@@ -373,9 +379,9 @@ describe('Fee Module Tests', function () {
         await driver.wait(until.stalenessOf(notification), 10000);
     });
     it('[Happy Case] Edit POBO FIXED FEE WITH PERCENT successfully', async function () {
-        //Navigate to fee detail by code
-        await feePage.navigateFeeDetailByCode(feeCode);
         const vat = 5;
+        await feePage.navigateFeeDetailByCode(feeCode);
+        await helper.clickOnEditButton(driver);
         await feePage.editFeeVAT(vat);
 
         const notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
@@ -388,7 +394,6 @@ describe('Fee Module Tests', function () {
     it('[Happy Case] Approve POBO FIXED FEE WITH PERCENT successfully', async function () {
         //Navigate to fee detail by code
         await feePage.navigateFeeDetailByCode(feeCode);
-
         await feePage.approveFee();
 
         const notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
@@ -431,9 +436,9 @@ describe('Fee Module Tests', function () {
         await driver.wait(until.stalenessOf(notification), 10000);
     });
     it('[Happy Case] Edit POBO_INTER_BANK FREE FEE successfully', async function () {
-        //Navigate to fee detail by code
-        await feePage.navigateFeeDetailByCode(feeCode);
         const vat = 5;
+        await feePage.navigateFeeDetailByCode(feeCode);
+        await helper.clickOnEditButton(driver);
         await feePage.editFeeVAT(vat);
 
         const notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
@@ -493,8 +498,9 @@ describe('Fee Module Tests', function () {
     });
     it('[Happy Case] Edit POBO_INTER_BANK FIXED FEE WITH PRICES successfully', async function () {
         //Navigate to fee detail by code
-        await feePage.navigateFeeDetailByCode(feeCode);
         const vat = 5;
+        await feePage.navigateFeeDetailByCode(feeCode);
+        await helper.clickOnEditButton(driver);
         await feePage.editFeeVAT(vat);
 
         const notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
@@ -555,8 +561,9 @@ describe('Fee Module Tests', function () {
     });
     it('[Happy Case] Edit POBO_INTER_BANK FIXED FEE WITH PERCENT successfully', async function () {
         //Navigate to fee detail by code
-        await feePage.navigateFeeDetailByCode(feeCode);
         const vat = 5;
+        await feePage.navigateFeeDetailByCode(feeCode);
+        await helper.clickOnEditButton(driver);
         await feePage.editFeeVAT(vat);
 
         const notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);

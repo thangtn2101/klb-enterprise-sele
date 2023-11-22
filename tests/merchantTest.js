@@ -24,6 +24,7 @@ const BusinessCateEnum = require("../enums/businessCategory.js");
 
 const { it } = require("mocha");
 
+const {resolve} = require('path');
 
 describe('Merchant Module Tests', function () {
   let driver;
@@ -123,7 +124,8 @@ describe('Merchant Module Tests', function () {
     let message;
 
     //Upload Giấy phép đăng ký kinh doanh
-    documentURL = '/home/unicloud/Documents/PDF example/Size_8.9MB.pdf'
+    
+    documentURL = resolve('./test_data/pdf/Size_8.9MB.pdf');
     await merchantPage.uploadDocument(DocEnum.BUSINESSLICENSE, documentURL)
 
     notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
@@ -133,7 +135,7 @@ describe('Merchant Module Tests', function () {
     await driver.wait(until.stalenessOf(notification), 10000);
 
     //Upload Hợp đồng
-    documentURL = '/home/unicloud/Pictures/Hop-dong.pdf'
+    documentURL = resolve('./test_data/pdf/Hop-dong.pdf')
     await merchantPage.uploadDocument(DocEnum.BUSINESSCONTRACT, documentURL)
 
     notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
@@ -143,7 +145,7 @@ describe('Merchant Module Tests', function () {
     await driver.wait(until.stalenessOf(notification), 10000);
 
     //Upload Giấy chứng nhận đại diện hợp pháp
-    documentURL = '/home/unicloud/Pictures/GIAY-PHEP-DKKD_001.jpg'
+    documentURL = resolve('./test_data/image/GIAY-PHEP-DKKD_001.jpg')
     await merchantPage.uploadDocument(DocEnum.LEGALCONTRACT, documentURL)
 
     notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
@@ -153,7 +155,7 @@ describe('Merchant Module Tests', function () {
     await driver.wait(until.stalenessOf(notification), 10000);
 
     //Upload CMND mặt trước
-    documentURL = '/home/unicloud/Pictures/doggie_corgi-1280x600.jpg'
+    documentURL = resolve('./test_data/image/fakeFrontID.jpg')
     await merchantPage.uploadDocument(DocEnum.FRONTID, documentURL)
 
     notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
@@ -163,7 +165,7 @@ describe('Merchant Module Tests', function () {
     await driver.wait(until.stalenessOf(notification), 10000);
 
     //Upload CMND mặt sau
-    documentURL = '/home/unicloud/Pictures/Nengoro.full.2465602.jpg'
+    documentURL = resolve('./test_data/image/fakeBackID.jpg')
     await merchantPage.uploadDocument(DocEnum.BACKID, documentURL)
 
     notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
@@ -173,7 +175,7 @@ describe('Merchant Module Tests', function () {
     await driver.wait(until.stalenessOf(notification), 10000);
 
     //Upload giấy tờ khác 
-    documentURL = '/home/unicloud/Pictures/Facebook post 1.png'
+    documentURL = resolve('./test_data/image/images.png')
     await merchantPage.uploadDocument(DocEnum.ORTHERDOCUMENT, documentURL)
 
     notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
