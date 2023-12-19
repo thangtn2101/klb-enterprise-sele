@@ -83,7 +83,7 @@ class MerchantPage {
         await chargeTypeEle.click();
 
         //Chọn giá trị loại thu phí
-        var valueFeeChargeType = await this.driver.wait(until.elementLocated(By.id(chargeTypeValue)), 10000);
+        var valueFeeChargeType = await this.driver.wait(until.elementLocated(By.xpath("//span[normalize-space()='"+chargeTypeValue+"']")), 10000);
         await valueFeeChargeType.click();
 
         //Chọn loại hình kinh doanh

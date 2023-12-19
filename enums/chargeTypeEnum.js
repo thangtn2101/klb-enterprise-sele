@@ -1,4 +1,4 @@
 module.exports = {
-    MONTHLY: "mat-option-33",
-    IMMEDIATELY: "mat-option-34",
+    MONTHLY: "Thu theo tháng",
+    IMMEDIATELY: "Thu ngay"
 };
