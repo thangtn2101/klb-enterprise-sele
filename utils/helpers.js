@@ -5,23 +5,19 @@ const chrome = require("selenium-webdriver/chrome");
 const config = require('../utils/config.js');
 
 const apiHost = 'https://api-flex-staging.kienlongbank.co/paygate/api'
-// Function to initialize the WebDriver with custom options and navigate to a URL
-async function initializeChromeDriver() {
+
+function initializeChromeDriver() {
   const chromeOptions = new chrome.Options();
   chromeOptions.addArguments("--disable-web-security");
+  chromeOptions.addArguments("--start-maximized")
+  // chromeOptions.addArguments("--auto-open-devtools-for-tabs")
 
-  const driver = await new Builder()
+  const driver =  new Builder()
     .forBrowser("chrome")
     .setChromeOptions(chromeOptions)
     .build();
 
-  // Open application using the uatHostURL from config
-  await driver.get(config.host);
-
-  // Make it full-screen
-  await driver.manage().window().maximize();
-
-  return driver; // Return the initialized driver
+  return driver;
 }
 
 

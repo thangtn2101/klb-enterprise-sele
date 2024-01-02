@@ -1,194 +1,170 @@
 const { By, until, Key } = require("selenium-webdriver");
-
-const config = require('../utils/config.js');
-
 const helper = require('../utils/helpers.js');
-
 const assert = require("assert");
+const BasePage = require("../base/basePage.js");
 
 
 
-class MerchantPage {
-    constructor(driver) {
-        this.driver = driver;
-    }
+class MerchantPage extends BasePage {
 
-    async navigate() {
-        await this.driver.get(config.host + '#/quan-ly-doi-tac/quan-ly-merchant');
-        await helper.waitLoadingStale(this.driver);
+    async navigate(theURL) {
+        await this.go_to_url(theURL);
+        await helper.waitLoadingStale(driver);
     }
 
     //step 1 
-    async createMCProfile(merchantType, affiliate, merchantCif, merchantNameValue, limitPackageValue, businessType, chargeTypeValue, repesentName, repesentDoB, sex, representEmail, isWhiteList) {
-        //Find button add
-        var addMerchantButton = await this.driver.wait(until.elementLocated(By.xpath("//span[contains(text(),'Thêm mới')]")), 10000);
-        await addMerchantButton.click();
+    async createMCProfile({
+        merchantType, 
+        affiliate, 
+        merchantCif, 
+        merchantNameValue, 
+        isAutoGenUsername,
+        username,
+        limitPackageID, 
+        businessTypeID, 
+        chargeTypeValue, 
+        representName, 
+        representDoB, 
+        representGenderId, 
+        representIDCode, 
+        representIDType,
+        representIDIssuanceDate,
+        representIDIssuancePlace,
+        representPosition,
+        financeContactName,
+        financeContactEmail, 
+        financeContactPhone,
+        techContactName,
+        techContactEmail,
+        techContactPhone,
+        isWhiteList}) {
+        //Click button add
+        await this.clickByXpath("//span[contains(text(),'Thêm mới')]");
 
-        //Mã giới thiệu 
-        var referralDropdown = await this.driver.wait(until.elementLocated(By.id('mat-select-4')), 10000);
-        await referralDropdown.click();
-
-        //Chọn giá trị mã giới thiệu 
-        var uniReferral = await this.driver.wait(until.elementLocated(By.xpath("//span[normalize-space()='" + affiliate + "']")), 10000);
-        await uniReferral.click();
+        //Chọn đơn vị mở TK
+        await this.clickByXpath("//mat-form-field[.//mat-label[contains(text(), 'Đơn vị')]]");
+        await this.clickByXpath("//mat-option[normalize-space()='"+affiliate+"']");
 
         //Chọn loại hình doanh nghiệp 
-        await this.driver.findElement(By.id('mat-select-6')).click();
-
-        var bussinessType = this.driver.wait(until.elementLocated(By.xpath("//span[normalize-space()='" + merchantType + "']")), 10000);
-        bussinessType.click();
+        await this.clickByXpath("//mat-form-field[.//mat-label[contains(text(), 'Loại hình doanh nghiệp')]]");
+        await this.clickByXpath("//span[normalize-space()='" + merchantType + "']");
 
         //Nhập Cif 
-        await this.driver.findElement(By.id('mat-input-2')).sendKeys(merchantCif);
+        await this.enterTextByXpath("//input[contains(@data-placeholder, 'Nhập Số CIF')]", merchantCif);
+        await this.clickByXpath("//button[contains(span, 'Tìm kiếm')]");
 
-        //Nhấn nút tìm kiếm thông tin Cif 
-        const cifCheckButtonPath = "/html[1]/body[1]/app-dashboard[1]/div[1]/main[1]/div[2]/app-content-layout[1]/div[1]/div[1]/app-form-merchant[1]/div[2]/mat-horizontal-stepper[1]/div[2]/div[1]/form[1]/div[1]/div[6]/mat-form-field[1]/div[1]/div[1]/div[1]/button[1]"
-        await this.driver.findElement(By.xpath(cifCheckButtonPath)).click();
-
-        await helper.waitLoadingStale(this.driver);
-
-
-        //Đợi CIf hợp lệ 
-        const mcInfoPath = "//div[8]//div[2]"
-        const mcInfoElement = await this.driver.findElement(By.xpath(mcInfoPath));
-
-        const mcInfoEText = await mcInfoElement.getText();
-
-        const defaultNullValue = "---"
-
-        assert.notEqual(mcInfoEText, defaultNullValue,"Get merchant from core fail");
+        await this.waitLoadingStale();
 
         //Thay đổi tên công ty
-        const merchantNamePath = "mat-input-1"
-        const merchantNameElement = await this.driver.findElement(By.id(merchantNamePath));
-        await merchantNameElement.click();
-        await merchantNameElement.clear();
-        await merchantNameElement.sendKeys(merchantNameValue);
+        const merchantNameInput = "//input[contains(@data-placeholder, 'Nhập Tên Đối tác')]"
+        await this.clearTextByXpath(merchantNameInput)
+        await this.enterTextByXpath(merchantNameInput, merchantNameValue);
 
-        // Nhấn dropdown hạn mức 
-        const limitPackagePath = "mat-select-8"
-        const limitPackageElement = await this.driver.findElement(By.id(limitPackagePath));
-        await limitPackageElement.click();
-
-        //Chọn giá trị hạn mức 
-        var limitPackage = await this.driver.wait(until.elementLocated(By.id(limitPackageValue)), 10000);
-        await this.driver.wait(until.elementIsVisible(limitPackage), 3000);
-        await this.driver.wait(until.elementIsEnabled(limitPackage), 3000);
-        await limitPackage.click();
-
-        //Nhấn dropdown Loại thu phí 
-        const chargeTypePath = 'mat-select-12';
-        const chargeTypeEle = await this.driver.findElement(By.id(chargeTypePath));
-        await this.driver.wait(until.elementIsVisible(chargeTypeEle), 3000);
-        await chargeTypeEle.click();
+        // Chọn hạn mức 
+        await this.clickByXpath("//mat-form-field[.//mat-label[contains(text(), 'Hạn mức giao dịch')]]");
+        await this.clickById(limitPackageID);
 
         //Chọn giá trị loại thu phí
-        var valueFeeChargeType = await this.driver.wait(until.elementLocated(By.xpath("//span[normalize-space()='"+chargeTypeValue+"']")), 10000);
-        await valueFeeChargeType.click();
+        await this.clickByXpath("//mat-form-field[.//mat-label[contains(text(), 'Loại thu phí')]]");
+        await this.clickByXpath("//span[normalize-space()='" + chargeTypeValue + "']");
 
         //Chọn loại hình kinh doanh
-        const businessCatePath = 'mat-select-10';
-        const businessCateEle = await this.driver.findElement(By.id(businessCatePath));
-        await this.driver.wait(until.elementIsVisible(businessCateEle), 3000);
-        await businessCateEle.click();
+        await this.clickByXpath("//mat-form-field[.//mat-label[contains(text(), 'Ngành nghề kinh doanh')]]");
+        await this.clickById(businessTypeID);
 
-        //Chọn giá trị loại hình kinh doanh
-        var businessCateValue = await this.driver.wait(until.elementLocated(By.id(businessType)), 10000);
-        await businessCateValue.click();
-
-        //Nhập username mới
-        let isExisted = true;
-        let username;
-
-        while (isExisted) {
-            let randomString = helper.generateRandomString(5);
-            username = "MC_" + randomString;
-            isExisted = await helper.checkUsernameAvailability(username);
+        //Enter Username
+        if(isAutoGenUsername == true){
+            let isExisted = true;
+            while (isExisted) {
+                let randomString = helper.generateRandomString(5);
+                username = "MC_" + randomString;
+                isExisted = await helper.checkUsernameAvailability(username);
+            }
         }
-        const usernameMC = await this.driver.findElement(By.id('mat-input-3'));
-        await usernameMC.click();
-        await usernameMC.clear();
-        await usernameMC.sendKeys(username);
-
+        const userNameInput = "//input[contains(@data-placeholder, 'Nhập Tài khoản MC Portal')]"
+        await this.clearTextByXpath(userNameInput)
+        await this.enterTextByXpath(userNameInput, username);
 
         //Nhập thông tin người đại diện 
-        const repesentNameEle = await this.driver.findElement(By.id('mat-input-4'));
-        await repesentNameEle.click();
+        const representNameInput = "//input[contains(@data-placeholder, 'Nhập Họ tên')]";
+        await this.clickByXpath(representNameInput);
+        await this.waitLoadingStale();
+        await this.clearTextByXpath(representNameInput)
+        await this.enterTextByXpath(representNameInput, "[Đại diện]" + representName);
 
-        await helper.waitLoadingStale(this.driver);
-
-        await repesentNameEle.clear();
-        await repesentNameEle.sendKeys("[Đại diện]" + repesentName);
-
-        const repesentDoBEle = await this.driver.findElement(By.id('mat-input-5'));
-        await repesentDoBEle.sendKeys(repesentDoB);
+        //Ngày sinh
+        const repesentDoInput = "//input[contains(@data-placeholder, 'dd/mm/yyyy')]";
+        await this.enterTextByXpath(repesentDoInput, representDoB);
 
         //Giới tính
-        const sexRadioEle = await this.driver.findElement(By.id(sex));
-        await this.driver.wait(until.elementIsVisible(sexRadioEle), 3000);
-        await sexRadioEle.click();
+        await this.clickById(representGenderId);
 
-        //Chọn quốc tịch 
-        const countryId = "mat-select-value-15"
-        await this.driver.findElement(By.id(countryId)).click();
-        //Chọn Việt Nam
-        await this.driver.findElement(By.xpath("//span[@class='mat-option-text']")).click();
+        //Chọn quốc tịch Việt Nam
+        await this.clickByXpath("//mat-form-field[.//mat-label[contains(text(), 'Quốc tịch')]]");
+        await this.clickByXpath("//mat-option[normalize-space()='VIỆT NAM']");
 
-        const identification = await this.driver.findElement(By.id('mat-input-6'));
-        await identification.click();
-        await identification.clear();
-        await identification.sendKeys("123456789");
+        // Nhập CCCD 
+        const idInput = "//input[contains(@data-placeholder, 'Nhập Số giấy tờ')]";
+        await this.clearTextByXpath(idInput);
+        await this.enterTextByXpath(idInput, representIDCode);
 
-        const identificationType = "mat-select-value-17"
-        await this.driver.findElement(By.id(identificationType)).click();
-        //Chọn CMND
-        var identificationValue = this.driver.wait(until.elementLocated(By.xpath("//span[normalize-space()='CMND']")), 10000);
-        await identificationValue.click();
+        //Chọn loại giấy tờ CMND 
+        await this.clickByXpath("//mat-form-field[.//mat-label[contains(text(), 'Loại giấy tờ')]]");
+        await this.clickByXpath("//span[normalize-space()='"+representIDType+"']");
 
-        const issuanceDate = await this.driver.findElement(By.id('mat-input-7'));
-        await issuanceDate.clear();
-        await issuanceDate.sendKeys("12/12/2011");
+        // Nhập ngày cấp 
+        const issuanceDateInput = "(//input[contains(@data-placeholder, 'dd/mm/yyyy')])[2]";
+        await this.clearTextByXpath(issuanceDateInput);
+        await this.enterTextByXpath(issuanceDateInput, representIDIssuanceDate);
 
-        const issuancePlace = await this.driver.findElement(By.id('mat-input-8'));
-        await issuancePlace.click();
-        await issuancePlace.clear();
-        await issuancePlace.sendKeys("Cục cảnh sát quản lý hành chính về trật tự xã hội");
+        // Nhập nơi cấp
+        const issuancePlace = "//input[contains(@data-placeholder, 'Nhập Nơi cấp')]";
+        this.enterTextByXpath(issuancePlace, representIDIssuancePlace)
 
-        const positionPath = "mat-select-18"
-        await this.driver.findElement(By.id(positionPath)).click();
         //Chọn Chủ tịch hội đồng quản trị
-        await this.driver.findElement(By.xpath("//span[contains(text(),'Chủ tịch Hội đồng quản trị')]")).click();
+        await this.clickByXpath("//mat-form-field[.//mat-label[contains(text(), 'Chức vụ')]]");
+        await this.clickByXpath("//span[contains(text(),'"+representPosition+"')]");
 
+        //Tên người liên hệ tài chính
+        const financeContactNameInput = "(//input[contains(@data-placeholder, 'Nhập Họ và tên')])[1]"
+        await this.clearTextByXpath(financeContactNameInput);
+        await this.enterTextByXpath(financeContactNameInput, "[Đại diện]" + financeContactName);
 
-        //Điền thông tin người liên hệ 
-        //Tên
-        const contactNameEle = await this.driver.findElement(By.id('mat-input-9'));
-        await contactNameEle.click();
-        await contactNameEle.clear();
-        await contactNameEle.sendKeys("[Đại diện]" + repesentName);
+        //SDT người liên hệ tài chính
+        const financeContactPhoneInput = "(//input[contains(@data-placeholder, 'Nhập Số điện thoại')])[1]"
+        await this.clearTextByXpath(financeContactPhoneInput);
+        await this.enterTextByXpath(financeContactPhoneInput, financeContactPhone);
 
-        //SDT
-        const contactPhoneEle = await this.driver.findElement(By.id('mat-input-10'));
-        await contactPhoneEle.click();
-        await contactPhoneEle.clear();
-        await contactPhoneEle.sendKeys("0798354561");
+        //Email người liên hệ tài chính
+        const financeContactEmailInput = "(//input[contains(@data-placeholder, 'Nhập Email')])[1]"
+        await this.clearTextByXpath(financeContactEmailInput);
+        await this.enterTextByXpath(financeContactEmailInput, financeContactEmail);
 
-        //Email
-        const contactEmailEle = await this.driver.findElement(By.id('mat-input-11'));
-        await contactEmailEle.click();
-        await contactEmailEle.clear();
-        await contactEmailEle.sendKeys(representEmail);
+        //Tên người liên hệ kỹ thuật
+        const techContactNameInput = "(//input[contains(@data-placeholder, 'Nhập Họ và tên')])[2]"
+        await this.clearTextByXpath(techContactNameInput);
+        await this.enterTextByXpath(techContactNameInput, "[Kỹ thuật]" + techContactName);
+
+        //SDT người liên hệ kỹ thuật
+        const techContactPhoneInput = "(//input[contains(@data-placeholder, 'Nhập Số điện thoại')])[2]"
+        await this.clearTextByXpath(techContactPhoneInput);
+        await this.enterTextByXpath(techContactPhoneInput, techContactPhone);
+
+        //Email người liên hệ kỹ thuật
+        const techContactEmailInput = "(//input[contains(@data-placeholder, 'Nhập Email')])[2]"
+        await this.clearTextByXpath(techContactEmailInput);
+        await this.enterTextByXpath(techContactEmailInput, techContactEmail);
 
         if (isWhiteList === false) {
             //Uncheck white list 
-            await this.driver.findElement(By.id('mat-checkbox-1')).click();
+            await this.clickById('mat-checkbox-1');
         }
 
         //Find merchant ID
-        const mcID = await this.driver.findElement(By.xpath("//input[contains(@placeholder, 'Nhập Mã Đối tác')]")).getAttribute('value');
+        const mcID =  await this.getValueByXpath("//input[contains(@placeholder, 'Nhập Mã Đối tác')]");
 
-        //Click create 
-        await this.driver.findElement(By.xpath('//*[@id="cdk-step-content-0-0"]/div/button')).click();
+        //Click continue in step 1 
+        await this.clickByXpath("//button[contains(span, 'Tiếp tục')]")
 
         // Return merchant ID 
         return mcID;
@@ -257,12 +233,12 @@ class MerchantPage {
     }
 
     async generateIntergration(webhookURL, retryValue) {
-        const urlHostInput = await this.driver.findElement(By.id('mat-input-16'));
+        const urlHostInput = await this.driver.findElement(By.xpath("//input[contains(@data-placeholder, 'Nhập URL')]"));
         await this.driver.wait(until.elementIsEnabled(urlHostInput), 2000);
         await this.driver.wait(until.elementIsVisible(urlHostInput), 2000);
         await urlHostInput.sendKeys(webhookURL);
 
-        const retryInput = await this.driver.findElement(By.id('mat-input-18'));
+        const retryInput = await this.driver.findElement(By.xpath("//input[contains(@data-placeholder, 'Nhập Số lần retry tối đa (x lần)')]"));
         await retryInput.sendKeys(retryValue);
 
         const genEKeyButtonPath = '//*[@id="cdk-step-content-0-4"]/div/app-form-tich-hop/form/div[2]/div[6]/div/mat-form-field/div/div[1]/div/button'
@@ -364,4 +340,4 @@ class MerchantPage {
     }
 }
 
-module.exports = MerchantPage;
+module.exports = new MerchantPage();

@@ -1,6 +1,6 @@
 module.exports = {
     host: 'https://cms-web-flex-staging.kienlongbank.co/',
-    //host: 'http://192.168.1.147:4200/#/',
+    // host: 'http://192.168.1.181:4200/',
     
     adminUsername: '2544',
     adminPassword: '123456',
