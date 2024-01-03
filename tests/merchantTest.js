@@ -16,7 +16,15 @@ const AffiliateEnum = require("../enums/affiliateEnum.js")
 
 const ChargeTypeEnum = require("../enums/chargeTypeEnum.js")
 
+const merchantTypeEnum = require("../enums/merchantTypeEnum.js")
+
 const SexEnum = require("../enums/sexEnum.js");
+
+const CountryEnum = require("../enums/countryEnum.js");
+
+const PositionEnum = require("../enums/positionEnum.js");
+
+const IDTypeEnum = require("../enums/IDTypeEnum.js");
 
 const DocEnum = require("../enums/documentEnum.js");
 
@@ -36,7 +44,7 @@ const baseurl = config.host;
 
 let mcID;
 
-describe('Merchant Module Tests', function () {
+describe('CREATE MERCHANT SCENARIO', function () {
 
   before(async function () {
     await loginPage.navigate(baseurl);
@@ -44,32 +52,32 @@ describe('Merchant Module Tests', function () {
   });
 
   after(async function () {
-    //await merchantPage.closeBrowser();
+    await merchantPage.closeBrowser();
   });
 
-  //Step 1
-  it('[Happy Case] Create merchant successfully', async function () {
+  it('[Happy Case] Create merchant Profile successfully', async function () {
     const url = baseurl + '#/quan-ly-doi-tac/quan-ly-merchant';
     await merchantPage.navigate(url);
 
     const profileParam = {
-      merchantType: companyCoreData.type, 
-      affiliate: "KLB - PGD DUC HOA", 
+      merchantType: merchantTypeEnum.PERSONAL, 
+      affiliate: AffiliateEnum.CN_BA_RIA_VUNG_TAU, 
       merchantCif: companyCoreData.cif, 
       merchantNameValue: "[TEST] THÙY VINH LỘC", 
       isAutoGenUsername: true,
       username,
-      limitPackageID: PackageEnum.VIP, 
-      businessTypeID: BusinessCateEnum.DICH_VU_AN_UONG, 
+      limitPackage: PackageEnum.VIP, 
+      businessCategory: BusinessCateEnum.DICH_VU_AN_UONG, 
       chargeTypeValue: ChargeTypeEnum.MONTHLY, 
       representName: "Trần Giang Thiếu Anh", 
       representDoB: "21/01/2001", 
-      representGenderId: SexEnum.MALE, 
+      representGender: SexEnum.MALE,
+      representCountry:  CountryEnum.VIETNAM,
       representIDCode: "036093002023", 
-      representIDType: "CCCD",
+      representIDType: IDTypeEnum.HO_CHIEU,
       representIDIssuanceDate: "15/05/2016",
       representIDIssuancePlace: "CỤC CẢNH SÁT QUẢN LÝ HÀNH CHÍNH VỀ TRẬT TỰ XÃ HỘI",
-      representPosition: "Chủ tịch Hội đồng quản trị",
+      representPosition: PositionEnum.CHU_TICH_HOI_DONG_QUAN_TRI,
       financeContactName: "Trần Giang Thiếu Anh",
       financeContactEmail: "thieuanh@gmail.com", 
       financeContactPhone: "0773834601",
@@ -90,18 +98,16 @@ describe('Merchant Module Tests', function () {
 
   });
 
-  // //Step 2
+  it('[Happy Case] Add ALL account successfully', async function () {
+    //Start add account
+    const accountSelect = companyData.account_no
+    await merchantPage.addAccountForMC(accountSelect);
 
-  // it('[Happy Case] Add account successfully', async function () {
-  //   //Start add account
-  //   const accountSelect = companyData.account_no
-  //   await merchantPage.addAccountForMC(accountSelect);
-
-  //   //Expected 3 account add successfully to Mc 
-  //   const tableBody = await driver.findElement(By.css('tbody[role="rowgroup"]'));
-  //   const rows = await tableBody.findElements(By.css('tr[role="row"]'));
-  //   assert.equal(rows.length, 3, "Gán tài khoản thất bại");
-  // });
+    //Expected 3 account add successfully to MC
+    const tableBody = await driver.findElement(By.css('tbody[role="rowgroup"]'));
+    const rows = await tableBody.findElements(By.css('tr[role="row"]'));
+    assert.equal(rows.length, 3, "Gán tài khoản thất bại");
+  });
 
   // //Step 3
   // it('[Happy Case] Add MC Fee successfully', async function () {

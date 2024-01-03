@@ -14,42 +14,43 @@ class MerchantPage extends BasePage {
 
     //step 1 
     async createMCProfile({
-        merchantType, 
-        affiliate, 
-        merchantCif, 
-        merchantNameValue, 
+        merchantType,
+        affiliate,
+        merchantCif,
+        merchantNameValue,
         isAutoGenUsername,
         username,
-        limitPackageID, 
-        businessTypeID, 
-        chargeTypeValue, 
-        representName, 
-        representDoB, 
-        representGenderId, 
-        representIDCode, 
+        limitPackage,
+        businessCategory,
+        chargeTypeValue,
+        representName,
+        representDoB,
+        representGender,
+        representCountry,
+        representIDCode,
         representIDType,
         representIDIssuanceDate,
         representIDIssuancePlace,
         representPosition,
         financeContactName,
-        financeContactEmail, 
+        financeContactEmail,
         financeContactPhone,
         techContactName,
         techContactEmail,
         techContactPhone,
-        isWhiteList}) {
+        isWhiteList }) {
         //Click button add
         await this.clickByXpath("//span[contains(text(),'Thêm mới')]");
 
         //Chọn đơn vị mở TK
         await this.clickByXpath("//mat-form-field[.//mat-label[contains(text(), 'Đơn vị')]]");
-        await this.clickByXpath("//mat-option[normalize-space()='"+affiliate+"']");
+        await this.clickByXpath(affiliate);
 
-        //Chọn loại hình doanh nghiệp 
+        //Chọn loại hình doanh nghiệp
         await this.clickByXpath("//mat-form-field[.//mat-label[contains(text(), 'Loại hình doanh nghiệp')]]");
-        await this.clickByXpath("//span[normalize-space()='" + merchantType + "']");
+        await this.clickByXpath(merchantType);
 
-        //Nhập Cif 
+        //Nhập Cif
         await this.enterTextByXpath("//input[contains(@data-placeholder, 'Nhập Số CIF')]", merchantCif);
         await this.clickByXpath("//button[contains(span, 'Tìm kiếm')]");
 
@@ -62,22 +63,22 @@ class MerchantPage extends BasePage {
 
         // Chọn hạn mức 
         await this.clickByXpath("//mat-form-field[.//mat-label[contains(text(), 'Hạn mức giao dịch')]]");
-        await this.clickById(limitPackageID);
+        await this.clickByXpath(limitPackage);
 
         //Chọn giá trị loại thu phí
         await this.clickByXpath("//mat-form-field[.//mat-label[contains(text(), 'Loại thu phí')]]");
-        await this.clickByXpath("//span[normalize-space()='" + chargeTypeValue + "']");
+        await this.clickByXpath(chargeTypeValue);
 
         //Chọn loại hình kinh doanh
         await this.clickByXpath("//mat-form-field[.//mat-label[contains(text(), 'Ngành nghề kinh doanh')]]");
-        await this.clickById(businessTypeID);
+        await this.clickByXpath(businessCategory);
 
         //Enter Username
-        if(isAutoGenUsername == true){
+        if (isAutoGenUsername == true) {
             let isExisted = true;
             while (isExisted) {
-                let randomString = helper.generateRandomString(5);
-                username = "MC_" + randomString;
+                let randomString = helper.generateRandomString(6);
+                username = "MCUN" + randomString;
                 isExisted = await helper.checkUsernameAvailability(username);
             }
         }
@@ -90,18 +91,18 @@ class MerchantPage extends BasePage {
         await this.clickByXpath(representNameInput);
         await this.waitLoadingStale();
         await this.clearTextByXpath(representNameInput)
-        await this.enterTextByXpath(representNameInput, "[Đại diện]" + representName);
+        await this.enterTextByXpath(representNameInput, representName);
 
         //Ngày sinh
         const repesentDoInput = "//input[contains(@data-placeholder, 'dd/mm/yyyy')]";
         await this.enterTextByXpath(repesentDoInput, representDoB);
 
         //Giới tính
-        await this.clickById(representGenderId);
+        await this.clickByXpath(representGender);
 
         //Chọn quốc tịch Việt Nam
         await this.clickByXpath("//mat-form-field[.//mat-label[contains(text(), 'Quốc tịch')]]");
-        await this.clickByXpath("//mat-option[normalize-space()='VIỆT NAM']");
+        await this.clickByXpath(representCountry);
 
         // Nhập CCCD 
         const idInput = "//input[contains(@data-placeholder, 'Nhập Số giấy tờ')]";
@@ -110,7 +111,7 @@ class MerchantPage extends BasePage {
 
         //Chọn loại giấy tờ CMND 
         await this.clickByXpath("//mat-form-field[.//mat-label[contains(text(), 'Loại giấy tờ')]]");
-        await this.clickByXpath("//span[normalize-space()='"+representIDType+"']");
+        await this.clickByXpath(representIDType);
 
         // Nhập ngày cấp 
         const issuanceDateInput = "(//input[contains(@data-placeholder, 'dd/mm/yyyy')])[2]";
@@ -121,14 +122,14 @@ class MerchantPage extends BasePage {
         const issuancePlace = "//input[contains(@data-placeholder, 'Nhập Nơi cấp')]";
         this.enterTextByXpath(issuancePlace, representIDIssuancePlace)
 
-        //Chọn Chủ tịch hội đồng quản trị
+        //Chọn Chức vụ
         await this.clickByXpath("//mat-form-field[.//mat-label[contains(text(), 'Chức vụ')]]");
-        await this.clickByXpath("//span[contains(text(),'"+representPosition+"')]");
+        await this.clickByXpath(representPosition);
 
         //Tên người liên hệ tài chính
         const financeContactNameInput = "(//input[contains(@data-placeholder, 'Nhập Họ và tên')])[1]"
         await this.clearTextByXpath(financeContactNameInput);
-        await this.enterTextByXpath(financeContactNameInput, "[Đại diện]" + financeContactName);
+        await this.enterTextByXpath(financeContactNameInput, financeContactName);
 
         //SDT người liên hệ tài chính
         const financeContactPhoneInput = "(//input[contains(@data-placeholder, 'Nhập Số điện thoại')])[1]"
@@ -143,7 +144,7 @@ class MerchantPage extends BasePage {
         //Tên người liên hệ kỹ thuật
         const techContactNameInput = "(//input[contains(@data-placeholder, 'Nhập Họ và tên')])[2]"
         await this.clearTextByXpath(techContactNameInput);
-        await this.enterTextByXpath(techContactNameInput, "[Kỹ thuật]" + techContactName);
+        await this.enterTextByXpath(techContactNameInput, techContactName);
 
         //SDT người liên hệ kỹ thuật
         const techContactPhoneInput = "(//input[contains(@data-placeholder, 'Nhập Số điện thoại')])[2]"
@@ -161,7 +162,7 @@ class MerchantPage extends BasePage {
         }
 
         //Find merchant ID
-        const mcID =  await this.getValueByXpath("//input[contains(@placeholder, 'Nhập Mã Đối tác')]");
+        const mcID = await this.getValueByXpath("//input[contains(@placeholder, 'Nhập Mã Đối tác')]");
 
         //Click continue in step 1 
         await this.clickByXpath("//button[contains(span, 'Tiếp tục')]")

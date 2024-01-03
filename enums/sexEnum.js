@@ -1,4 +1,8 @@
+function generatePath(key) {
+    return `//mat-radio-button//span[text()='${key}']`;
+}
+
 module.exports = {
-    MALE: "//mat-radio-button//span[text()='Nam']",
-    FEMALE: "//mat-radio-button//span[text()='Nữ']"
+    MALE: generatePath("Nam"),
+    FEMALE: generatePath("Nữ")
 };

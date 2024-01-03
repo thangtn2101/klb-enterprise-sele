@@ -1,7 +1,11 @@
+function generatePath(key) {    
+    return `//mat-option[contains(span/div/text(), '${key}')]`;
+}
+
 module.exports = {
-    SIMPLE: "mat-option-14",
-    SILVER: "mat-option-15",
-    GOLD: "mat-option-16",
-    PLATINUM: "mat-option-17",
-    VIP: "mat-option-18"
+    SIMPLE: generatePath("Gói Simple"),
+    SILVER: generatePath("Gói KLB-SILVER"),
+    GOLD: generatePath("Gói KLB-GOLD"),
+    PLATINUM: generatePath("Gói KLB-PLATINUM"),
+    VIP: generatePath("Gói KLB-VIP")
 };
