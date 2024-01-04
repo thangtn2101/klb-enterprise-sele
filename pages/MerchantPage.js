@@ -9,10 +9,10 @@ class MerchantPage extends BasePage {
 
     async navigate(theURL) {
         await this.go_to_url(theURL);
-        await helper.waitLoadingStale(driver);
+        await this.waitLoadingStale();
     }
 
-    //step 1 
+    //Step 1 
     async createMCProfile({
         merchantType,
         affiliate,
@@ -164,73 +164,33 @@ class MerchantPage extends BasePage {
         //Find merchant ID
         const mcID = await this.getValueByXpath("//input[contains(@placeholder, 'Nhập Mã Đối tác')]");
 
-        //Click continue in step 1 
-        await this.clickByXpath("//button[contains(span, 'Tiếp tục')]")
-
         // Return merchant ID 
         return mcID;
     }
 
     //step 2 
-    async addAccountForMC(accountNo) {
+    async addAccountForMC(accountNo, accountType) {
+        //Click on button "Thêm mới"
+        await this.clickByXpath("//button[contains(span, 'Thêm mới')]");
+        await this.waitLoadingStale();
+        
+        //Select account type
+        await this.clickByXpath("//div[contains(span,'Loại tài khoản')]");
+        await this.clickByXpath(accountType)
 
-        const typeValues = [
-            "//span[normalize-space()='TK chuyên chi']",
-            "//span[normalize-space()='TK chuyên thu']",
-            "//span[normalize-space()='TK thu phí']"
-        ];
-        for (const typeValue of typeValues) {
-            //Nhấn button "Thêm mới"
-            const addAccountBTPath = "//button[contains(span, 'Thêm mới')]";
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            const addAccount = await this.driver.wait(until.elementLocated(By.xpath(addAccountBTPath)), 5000);
-            await this.driver.wait(until.elementIsVisible(addAccount), 5000);
-            await this.driver.wait(until.elementIsEnabled(addAccount), 5000);
-            await addAccount.click();
-            await helper.waitLoadingStale(this.driver);
+        //Select account number
+        await this.clickByXpath("//div[contains(span,'Số tài khoản')]");
+        await this.clickByXpath("//mat-option[contains(span,'" + accountNo + "')]")
 
-            //Nhấn vào dropdown Chọn lọai TK 
-            let accountTypeDropPath = "//div[contains(span,'Loại tài khoản')]";
-
-            const accountTypeDropComponent = await this.driver.wait(until.elementLocated(By.xpath(accountTypeDropPath)), 7000);
-
-            await this.driver.wait(until.elementIsVisible(accountTypeDropComponent), 3000);
-            await this.driver.wait(until.elementIsEnabled(accountTypeDropComponent), 3000);
-            await accountTypeDropComponent.click();
-
-            //Chọn giá trị loại tài khoản
-            const addAccountTypeValue = await this.driver.wait(until.elementLocated(By.xpath(typeValue)), 5000);
-            await addAccountTypeValue.click();
-
-
-            // Chọn Tài khoản 
-            const accountNumDropPath = "//div[contains(span,'Số tài khoản')]"
-            const addAccountNum = await this.driver.wait(until.elementLocated(By.xpath(accountNumDropPath)), 5000);
-
-            await this.driver.wait(until.elementIsVisible(addAccountNum), 3000);
-            await this.driver.wait(until.elementIsEnabled(addAccountNum), 3000);
-            await addAccountNum.click();
-
-            const addAccountNumValue = await this.driver.wait(until.elementLocated(By.xpath("//mat-option[contains(span,'" + accountNo + "')]")), 5000);
-            await addAccountNumValue.click();
-
-            await this.driver.findElement(By.xpath("//span[contains(text(),'Lưu')]")).click();
-            await helper.waitLoadingStale(this.driver);
-
-        }
-
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        var continueButton = await this.driver.wait(until.elementLocated(By.xpath('//*[@id="cdk-step-content-0-1"]/div[2]/button[2]')), 1000);
-        await this.driver.wait(until.elementIsEnabled(continueButton), 1000);
-        await this.driver.wait(until.elementIsVisible(continueButton), 1000);
-        await continueButton.click();
+        await this.clickByXpath("//span[contains(text(),'Lưu')]")
+        await this.waitLoadingStale();
     }
 
     async uploadDocument(documentType, imageURL) {
         var uploadButton = await this.driver.wait(until.elementLocated(By.xpath(documentType)), 1000);
         await this.driver.wait(until.elementIsEnabled(uploadButton), 1000);
         await uploadButton.sendKeys(imageURL)
-        await helper.waitLoadingStale(this.driver);
+        await this.waitLoadingStale();
     }
 
     async generateIntergration(webhookURL, retryValue) {
@@ -274,7 +234,7 @@ class MerchantPage extends BasePage {
 
     async navigateMerchantDetail(id) {
         this.navigate();
-
+        
         //Search merchant by id 
         const searchInput = await this.driver.wait(until.elementLocated(By.xpath("//input[contains(@placeholder, 'Số CIF')]")), 10000);
         await this.driver.wait(until.elementIsEnabled(searchInput), 2000);

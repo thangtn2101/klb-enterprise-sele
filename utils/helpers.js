@@ -131,17 +131,11 @@ function generateCompanyName() {
   return companyName;
 }
 
-async function waitLoadingStale(driver){
-  const loadingPath = "/html/body/app-dashboard/div/main/div[2]/ngx-spinner/div"
-  const loadingElement = await driver.wait(until.elementLocated(By.xpath(loadingPath)), 10000);
-  await driver.wait(until.stalenessOf(loadingElement), 10000);
-}
 
 module.exports = {
   initializeChromeDriver,
   checkUsernameAvailability,
   generateRandomString,
   getAllFeeBy,
-  generateCompanyName,
-  waitLoadingStale
+  generateCompanyName
 };

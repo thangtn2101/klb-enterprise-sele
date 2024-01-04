@@ -26,6 +26,8 @@ const PositionEnum = require("../enums/positionEnum.js");
 
 const IDTypeEnum = require("../enums/IDTypeEnum.js");
 
+const AccountTypeEnum = require("../enums/accountTypeEnum.js");
+
 const DocEnum = require("../enums/documentEnum.js");
 
 const BusinessCateEnum = require("../enums/businessCategory.js");
@@ -33,6 +35,8 @@ const BusinessCateEnum = require("../enums/businessCategory.js");
 const { it } = require("mocha");
 
 const { resolve } = require('path');
+
+const validateHelper = require("../utils/validateHelper.js");
 
 const username = config.adminUsername;
 
@@ -60,26 +64,26 @@ describe('CREATE MERCHANT SCENARIO', function () {
     await merchantPage.navigate(url);
 
     const profileParam = {
-      merchantType: merchantTypeEnum.PERSONAL, 
-      affiliate: AffiliateEnum.CN_BA_RIA_VUNG_TAU, 
-      merchantCif: companyCoreData.cif, 
-      merchantNameValue: "[TEST] THÙY VINH LỘC", 
+      merchantType: merchantTypeEnum.PERSONAL,
+      affiliate: AffiliateEnum.CN_BA_RIA_VUNG_TAU,
+      merchantCif: companyCoreData.cif,
+      merchantNameValue: "[TEST] THÙY VINH LỘC",
       isAutoGenUsername: true,
       username,
-      limitPackage: PackageEnum.VIP, 
-      businessCategory: BusinessCateEnum.DICH_VU_AN_UONG, 
-      chargeTypeValue: ChargeTypeEnum.MONTHLY, 
-      representName: "Trần Giang Thiếu Anh", 
-      representDoB: "21/01/2001", 
+      limitPackage: PackageEnum.VIP,
+      businessCategory: BusinessCateEnum.DICH_VU_AN_UONG,
+      chargeTypeValue: ChargeTypeEnum.MONTHLY,
+      representName: "Trần Giang Thiếu Anh",
+      representDoB: "21/01/2001",
       representGender: SexEnum.MALE,
-      representCountry:  CountryEnum.VIETNAM,
-      representIDCode: "036093002023", 
+      representCountry: CountryEnum.VIETNAM,
+      representIDCode: "036093002023",
       representIDType: IDTypeEnum.HO_CHIEU,
       representIDIssuanceDate: "15/05/2016",
       representIDIssuancePlace: "CỤC CẢNH SÁT QUẢN LÝ HÀNH CHÍNH VỀ TRẬT TỰ XÃ HỘI",
       representPosition: PositionEnum.CHU_TICH_HOI_DONG_QUAN_TRI,
       financeContactName: "Trần Giang Thiếu Anh",
-      financeContactEmail: "thieuanh@gmail.com", 
+      financeContactEmail: "thieuanh@gmail.com",
       financeContactPhone: "0773834601",
       techContactName: "Nguyễn Trần Kỹ Thuật",
       techContactEmail: "kythuat@gmail.com",
@@ -89,24 +93,33 @@ describe('CREATE MERCHANT SCENARIO', function () {
 
     mcID = await merchantPage.createMCProfile(profileParam);
 
-    const notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
-    const message = await notification.getText();
-    const regExpObject = new RegExp("Khởi tạo đối tác thành công");
-    assert.match(message, regExpObject);
+    //Click continue in step 1 
+    await merchantPage.clickByXpath("//button[contains(span, 'Tiếp tục')]");
 
-    await driver.wait(until.stalenessOf(notification), 10000);
-
+    // Assertion 
+    const notificationPath = '//p-toastitem'; 
+    await validateHelper.assertNotificationMatchByXpath(notificationPath, "Khởi tạo đối tác thành công")
   });
 
   it('[Happy Case] Add ALL account successfully', async function () {
     //Start add account
-    const accountSelect = companyData.account_no
-    await merchantPage.addAccountForMC(accountSelect);
+
+    const accountSelect = companyCoreData.account_no
+
+    await merchantPage.addAccountForMC(accountSelect, AccountTypeEnum.PAYMENT_ACCOUNT);
+
+    await merchantPage.addAccountForMC(accountSelect, AccountTypeEnum.REVENUE_ACCOUNT);
+
+    await merchantPage.addAccountForMC(accountSelect, AccountTypeEnum.FEE_PAYMENT_ACCOUNT);
+
 
     //Expected 3 account add successfully to MC
     const tableBody = await driver.findElement(By.css('tbody[role="rowgroup"]'));
     const rows = await tableBody.findElements(By.css('tr[role="row"]'));
     assert.equal(rows.length, 3, "Gán tài khoản thất bại");
+
+    await merchantPage.clickByXpath('//*[@id="cdk-step-content-0-1"]/div[2]/button[2]')
+
   });
 
   // //Step 3
