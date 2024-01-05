@@ -17,14 +17,14 @@ class BasePage {
         await input.sendKeys(inputValue);
     }
 
-    async enterTextByCss(css, searchText) {
+    async enterTextByCss(css, value) {
         const input = await driver.wait(until.elementLocated(By.css(css)), 10000);
-        await input.sendKeys(searchText);
+        await input.sendKeys(value);
 
     }
-    async enterTextByXpath(xpath, searchText) {
+    async enterTextByXpath(xpath, value) {
         const input = await driver.wait(until.elementLocated(By.xpath(xpath)), 10000);
-        await input.sendKeys(searchText);
+        await input.sendKeys(value);
     }
     async clearTextByXpath(xpath){
         const input = await driver.wait(until.elementLocated(By.xpath(xpath)), 10000);

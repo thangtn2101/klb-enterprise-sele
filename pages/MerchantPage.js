@@ -161,14 +161,11 @@ class MerchantPage extends BasePage {
             await this.clickById('mat-checkbox-1');
         }
 
-        //Find merchant ID
+        //Return merchant ID 
         const mcID = await this.getValueByXpath("//input[contains(@placeholder, 'Nhập Mã Đối tác')]");
-
-        // Return merchant ID 
         return mcID;
     }
 
-    //step 2 
     async addAccountForMC(accountNo, accountType) {
         //Click on button "Thêm mới"
         await this.clickByXpath("//button[contains(span, 'Thêm mới')]");
@@ -186,10 +183,12 @@ class MerchantPage extends BasePage {
         await this.waitLoadingStale();
     }
 
+    async addFee(feeType, feeName, dateApply){
+        
+    }
+
     async uploadDocument(documentType, imageURL) {
-        var uploadButton = await this.driver.wait(until.elementLocated(By.xpath(documentType)), 1000);
-        await this.driver.wait(until.elementIsEnabled(uploadButton), 1000);
-        await uploadButton.sendKeys(imageURL)
+        await this.enterTextByXpath(documentType, imageURL);
         await this.waitLoadingStale();
     }
 

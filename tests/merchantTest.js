@@ -46,6 +46,8 @@ const adminName = config.adminName;
 
 const baseurl = config.host;
 
+const notificationPath = '//p-toastitem';
+
 let mcID;
 
 describe('CREATE MERCHANT SCENARIO', function () {
@@ -56,7 +58,7 @@ describe('CREATE MERCHANT SCENARIO', function () {
   });
 
   after(async function () {
-    await merchantPage.closeBrowser();
+    // await merchantPage.closeBrowser();
   });
 
   it('[Happy Case] Create merchant Profile successfully', async function () {
@@ -96,8 +98,9 @@ describe('CREATE MERCHANT SCENARIO', function () {
     //Click continue in step 1 
     await merchantPage.clickByXpath("//button[contains(span, 'Tiếp tục')]");
 
+    await merchantPage.waitLoadingStale();
+
     // Assertion 
-    const notificationPath = '//p-toastitem'; 
     await validateHelper.assertNotificationMatchByXpath(notificationPath, "Khởi tạo đối tác thành công")
   });
 
@@ -107,10 +110,13 @@ describe('CREATE MERCHANT SCENARIO', function () {
     const accountSelect = companyCoreData.account_no
 
     await merchantPage.addAccountForMC(accountSelect, AccountTypeEnum.PAYMENT_ACCOUNT);
+    await validateHelper.assertNotificationMatchByXpath(notificationPath, "Thêm mới thành công")
 
     await merchantPage.addAccountForMC(accountSelect, AccountTypeEnum.REVENUE_ACCOUNT);
+    await validateHelper.assertNotificationMatchByXpath(notificationPath, "Thêm mới thành công")
 
     await merchantPage.addAccountForMC(accountSelect, AccountTypeEnum.FEE_PAYMENT_ACCOUNT);
+    await validateHelper.assertNotificationMatchByXpath(notificationPath, "Thêm mới thành công")
 
 
     //Expected 3 account add successfully to MC
@@ -118,108 +124,59 @@ describe('CREATE MERCHANT SCENARIO', function () {
     const rows = await tableBody.findElements(By.css('tr[role="row"]'));
     assert.equal(rows.length, 3, "Gán tài khoản thất bại");
 
-    await merchantPage.clickByXpath('//*[@id="cdk-step-content-0-1"]/div[2]/button[2]')
-
+    await merchantPage.clickByXpath("(//button[contains(span, 'Tiếp tục')])[2]");
   });
 
-  // //Step 3
-  // it('[Happy Case] Add MC Fee successfully', async function () {
-  //   var continueButton = await driver.wait(until.elementLocated(By.xpath('//*[@id="cdk-step-content-0-2"]/div/button[2]')), 1000);
-  //   await driver.wait(until.elementIsEnabled(continueButton), 1000);
-  //   await driver.wait(until.elementIsVisible(continueButton), 1000);
-  //   await continueButton.click();
-  //   assert.equal(1, 1, "Gán phí Thất bại");
-  // });
+  //Step 3
+  it('[Happy Case] Add MC Fee successfully', async function () {
+     await merchantPage.clickByXpath("(//button[contains(span, 'Tiếp tục')])[3]");
+  });
 
-  // //Step 4 
-  // it('[Happy Case] Upload MC document successfully', async function () {
-  //   const regExpObject = new RegExp("Upload file thành công");
-  //   let notification;
-  //   let documentURL;
-  //   let message;
+  //Step 4 
+  it('[Happy Case] Upload MC document successfully', async function () {
+    let documentURL;
 
-  //   //Upload Giấy phép đăng ký kinh doanh
+    //Upload Giấy phép đăng ký kinh doanh
+    documentURL = resolve('./test_data/pdf/Size_8.9MB.pdf');
+    await merchantPage.uploadDocument(DocEnum.BUSINESSLICENSE, documentURL)
+    await validateHelper.assertNotificationMatchByXpath(notificationPath, "Upload file thành công")
 
-  //   documentURL = resolve('./test_data/pdf/Size_8.9MB.pdf');
-  //   await merchantPage.uploadDocument(DocEnum.BUSINESSLICENSE, documentURL)
+    //Upload Hợp đồng
+    documentURL = resolve('./test_data/pdf/Hop-dong.pdf')
+    await merchantPage.uploadDocument(DocEnum.BUSINESSCONTRACT, documentURL)
+    await validateHelper.assertNotificationMatchByXpath(notificationPath, "Upload file thành công")
 
-  //   notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
-  //   message = await notification.getText();
+    //Upload Giấy chứng nhận đại diện hợp pháp
+    documentURL = resolve('./test_data/image/GIAY-PHEP-DKKD_001.jpg')
+    await merchantPage.uploadDocument(DocEnum.LEGALCONTRACT, documentURL)
+    await validateHelper.assertNotificationMatchByXpath(notificationPath, "Upload file thành công")
 
-  //   assert.match(message, regExpObject, "Upload Giấy phép KD thất bại");
-  //   await driver.wait(until.stalenessOf(notification), 10000);
+    //Upload CMND mặt trước
+    documentURL = resolve('./test_data/image/fakeFrontID.jpg')
+    await merchantPage.uploadDocument(DocEnum.FRONTID, documentURL)
+    await validateHelper.assertNotificationMatchByXpath(notificationPath, "Upload file thành công")
 
-  //   //Upload Hợp đồng
-  //   documentURL = resolve('./test_data/pdf/Hop-dong.pdf')
-  //   await merchantPage.uploadDocument(DocEnum.BUSINESSCONTRACT, documentURL)
+    //Upload CMND mặt sau
+    documentURL = resolve('./test_data/image/fakeBackID.jpg')
+    await merchantPage.uploadDocument(DocEnum.BACKID, documentURL)
+    await validateHelper.assertNotificationMatchByXpath(notificationPath, "Upload file thành công")
 
-  //   notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
-  //   message = await notification.getText();
+    //Upload giấy tờ khác 
+    documentURL = resolve('./test_data/image/images.png')
+    await merchantPage.uploadDocument(DocEnum.ORTHERDOCUMENT, documentURL)
+    await validateHelper.assertNotificationMatchByXpath(notificationPath, "Upload file thành công")
 
-  //   assert.match(message, regExpObject, "Upload Hợp đồng thất bại");
-  //   await driver.wait(until.stalenessOf(notification), 10000);
-
-  //   //Upload Giấy chứng nhận đại diện hợp pháp
-  //   documentURL = resolve('./test_data/image/GIAY-PHEP-DKKD_001.jpg')
-  //   await merchantPage.uploadDocument(DocEnum.LEGALCONTRACT, documentURL)
-
-  //   notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
-  //   message = await notification.getText();
-
-  //   assert.match(message, regExpObject, "Upload Giấy chứng nhận đại diện thất bại");
-  //   await driver.wait(until.stalenessOf(notification), 10000);
-
-  //   //Upload CMND mặt trước
-  //   documentURL = resolve('./test_data/image/fakeFrontID.jpg')
-  //   await merchantPage.uploadDocument(DocEnum.FRONTID, documentURL)
-
-  //   notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
-  //   message = await notification.getText();
-
-  //   assert.match(message, regExpObject, "Upload CMND mặt trước thất bại");
-  //   await driver.wait(until.stalenessOf(notification), 10000);
-
-  //   //Upload CMND mặt sau
-  //   documentURL = resolve('./test_data/image/fakeBackID.jpg')
-  //   await merchantPage.uploadDocument(DocEnum.BACKID, documentURL)
-
-  //   notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
-  //   message = await notification.getText();
-
-  //   assert.match(message, regExpObject, "Upload CMND mặt sau thất bại");
-  //   await driver.wait(until.stalenessOf(notification), 10000);
-
-  //   //Upload giấy tờ khác 
-  //   documentURL = resolve('./test_data/image/images.png')
-  //   await merchantPage.uploadDocument(DocEnum.ORTHERDOCUMENT, documentURL)
-
-  //   notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
-  //   message = await notification.getText();
-
-  //   assert.match(message, regExpObject, "Upload giấy tờ khác thất bại");
-  //   await driver.wait(until.stalenessOf(notification), 10000);
-
-  //   var continueButton = await driver.wait(until.elementLocated(By.xpath('//*[@id="cdk-step-content-0-3"]/div[2]/button[2]')), 1000);
-  //   await driver.wait(until.elementIsEnabled(continueButton), 1000);
-  //   await driver.wait(until.elementIsVisible(continueButton), 1000);
-  //   await continueButton.click();
-
-  // });
+    await merchantPage.clickByXpath("(//button[contains(span, 'Tiếp tục')])[4]");
+  });
 
   // //Step 5
-  // it('[Happy Case] Generate integration Key', async function () {
-  //   const webhookURL = 'https://www.google.com/'
-  //   const retryValue = '100'
-  //   await merchantPage.generateIntergration(webhookURL, retryValue);
+  it('[Happy Case] Generate integration Key', async function () {
+    const webhookURL = 'https://www.google.com/'
+    const retryValue = '100'
+    await merchantPage.generateIntergration(webhookURL, retryValue);
 
-  //   notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
-  //   message = await notification.getText();
-
-  //   const regExpObject = new RegExp("Success");
-  //   assert.match(message, regExpObject);
-  //   await driver.wait(until.stalenessOf(notification), 10000);
-
-  // });
+    await validateHelper.assertNotificationMatchByXpath(notificationPath, "Success")
+  });
 
 
   // it('[Happy Case] Reject merchant successfully', async function(){
