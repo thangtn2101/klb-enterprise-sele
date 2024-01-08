@@ -18,7 +18,6 @@ class MerchantPage extends BasePage {
         affiliate,
         merchantCif,
         merchantNameValue,
-        isAutoGenUsername,
         username,
         limitPackage,
         businessCategory,
@@ -74,17 +73,11 @@ class MerchantPage extends BasePage {
         await this.clickByXpath(businessCategory);
 
         //Enter Username
-        if (isAutoGenUsername == true) {
-            let isExisted = true;
-            while (isExisted) {
-                let randomString = helper.generateRandomString(6);
-                username = "MCUN" + randomString;
-                isExisted = await helper.checkUsernameAvailability(username);
-            }
+        if (username != null) {
+            const userNameInput = "//input[contains(@data-placeholder, 'Nhập Tài khoản MC Portal')]"
+            await this.clearTextByXpath(userNameInput)
+            await this.enterTextByXpath(userNameInput, username);
         }
-        const userNameInput = "//input[contains(@data-placeholder, 'Nhập Tài khoản MC Portal')]"
-        await this.clearTextByXpath(userNameInput)
-        await this.enterTextByXpath(userNameInput, username);
 
         //Nhập thông tin người đại diện 
         const representNameInput = "//input[contains(@data-placeholder, 'Nhập Họ tên')]";
@@ -170,7 +163,7 @@ class MerchantPage extends BasePage {
         //Click on button "Thêm mới"
         await this.clickByXpath("//button[contains(span, 'Thêm mới')]");
         await this.waitLoadingStale();
-        
+
         //Select account type
         await this.clickByXpath("//div[contains(span,'Loại tài khoản')]");
         await this.clickByXpath(accountType)
@@ -183,8 +176,24 @@ class MerchantPage extends BasePage {
         await this.waitLoadingStale();
     }
 
-    async addFee(feeType, feeName, dateApply){
-        
+    async addMCFee(feeType, feeName, dateApply) {
+        await this.clickByXpath("(//button[contains(span, 'Thêm mới')])[2]");
+
+        await this.clickByXpath("//div[contains(span,'Loại dịch vụ')]");
+        await this.clickByXpath(feeType);
+        await this.waitLoadingStale();
+
+        await this.clickByXpath("//div[contains(span,'Biểu phí')]");
+        await this.clickByXpath("//mat-option[contains(span,'" + feeName + "')]")
+
+        const tdateApplyInput = "(//div[.//mat-label[text()='Ngày hiệu lực']]//input)[3]"
+        await this.enterTextByXpath(tdateApplyInput, dateApply);
+
+        await this.clickByXpath("//span[contains(text(),'Lưu')]")
+    }
+
+    async deleteMCFee(feeName,dateApply){
+
     }
 
     async uploadDocument(documentType, imageURL) {
@@ -192,112 +201,67 @@ class MerchantPage extends BasePage {
         await this.waitLoadingStale();
     }
 
-    async generateIntergration(webhookURL, retryValue) {
-        const urlHostInput = await this.driver.findElement(By.xpath("//input[contains(@data-placeholder, 'Nhập URL')]"));
-        await this.driver.wait(until.elementIsEnabled(urlHostInput), 2000);
-        await this.driver.wait(until.elementIsVisible(urlHostInput), 2000);
-        await urlHostInput.sendKeys(webhookURL);
+    async enterIntegrationData(webhookURL, retryValue, isChangeTechEmail, techEmail) {
+        await this.enterTextByXpath("//input[contains(@data-placeholder, 'Nhập URL')]", webhookURL);
+        await this.enterTextByXpath("//input[contains(@data-placeholder, 'Nhập Số lần retry tối đa (x lần)')]", retryValue);
 
-        const retryInput = await this.driver.findElement(By.xpath("//input[contains(@data-placeholder, 'Nhập Số lần retry tối đa (x lần)')]"));
-        await retryInput.sendKeys(retryValue);
+        if (isChangeTechEmail === true) {
+            const emailRetryInput = "//input[contains(@data-placeholder, 'Nhập Email nhận thông báo khi @x lần retry thất bại";
+            await this.clearTextByXpath(emailRetryInput);
+            await this.enterTextByXpath(emailRetryInput, techEmail);
+        }
 
-        const genEKeyButtonPath = '//*[@id="cdk-step-content-0-4"]/div/app-form-tich-hop/form/div[2]/div[6]/div/mat-form-field/div/div[1]/div/button'
-        var genEKeyButton = await this.driver.wait(until.elementLocated(By.xpath(genEKeyButtonPath)), 1000);
-        await this.driver.wait(until.elementIsEnabled(genEKeyButton), 1000);
-        await this.driver.wait(until.elementIsVisible(genEKeyButton), 1000);
-        await genEKeyButton.click();
-        await helper.waitLoadingStale(this.driver);
+        const genEncryptKeyButtonPath = "(//button[contains(text(), 'Tạo mã')])[1]"
+        await this.clickByXpath(genEncryptKeyButtonPath)
+        await this.waitLoadingStale();
 
-        const genSKeyButtonPath = '//*[@id="cdk-step-content-0-4"]/div/app-form-tich-hop/form/div[2]/div[8]/div/mat-form-field/div/div[1]/div/button'
-        var genSKeyButton = await this.driver.wait(until.elementLocated(By.xpath(genSKeyButtonPath)), 1000);
-        await this.driver.wait(until.elementIsEnabled(genSKeyButton), 1000);
-        await this.driver.wait(until.elementIsVisible(genSKeyButton), 1000);
-        await genSKeyButton.click();
-        await helper.waitLoadingStale(this.driver);
-
-        await this.driver.findElement(By.id('mat-input-17'))
-            .getAttribute('value').then(textValue => {
-                assert.notEqual('', textValue);
-            });
-
-
-        await this.driver.findElement(By.id('mat-input-19'))
-            .getAttribute('value').then(textValue => {
-                assert.notEqual('', textValue);
-            });
-
-        //Nhấn lưu 
-        await this.driver.findElement(By.xpath('//*[@id="cdk-step-content-0-4"]/div/app-form-tich-hop/div[2]/button')).click();
-        await helper.waitLoadingStale(this.driver);
+        const genSecretKeyButtonPath = "(//button[contains(text(), 'Tạo mã')])[2]"
+        await this.clickByXpath(genSecretKeyButtonPath)
+        await this.waitLoadingStale();
     }
 
-    async navigateMerchantDetail(id) {
-        this.navigate();
-        
-        //Search merchant by id 
-        const searchInput = await this.driver.wait(until.elementLocated(By.xpath("//input[contains(@placeholder, 'Số CIF')]")), 10000);
-        await this.driver.wait(until.elementIsEnabled(searchInput), 2000);
-        await this.driver.wait(until.elementIsVisible(searchInput), 2000);
-        await searchInput.sendKeys(id, Key.ENTER);
+    async enterIPListData(ipData) {
+        await this.clickByXpath("(//button[contains(span, 'Thêm mới')])[3]");
+        await this.enterTextByXpath("//input[contains(@data-placeholder, 'Nhập Whitelist Ip')]", ipData);
+        await this.clickByXpath("//button[contains(span, 'Lưu')]");
+    }
 
-        await helper.waitLoadingStale(this.driver);
+    async navigateMerchantDetail(mcPrefix) {
+        //Search merchant by id 
+        await this.enterTextByXpath("//input[contains(@placeholder, 'Số CIF| Mã Đối tác | Tên đối tác')]", mcPrefix);
+        await this.clickByXpath("//button[contains(text(), 'Tìm kiếm')]")
+        await this.waitLoadingStale();
 
         // Get the first row
-        const firstRow = await this.driver.findElement(By.css('tbody > tr'));
+        const firstRow = await driver.findElement(By.css('tbody > tr'));
 
         // Click on the first row
         await firstRow.click();
-
     }
 
     async sendApproveRequest() {
-        const approveButton = await this.driver.wait(until.elementLocated(By.xpath("//button[contains(span, 'Gửi duyệt')]")), 1000);
-        await this.driver.wait(until.elementIsEnabled(approveButton), 1000);
-        await approveButton.click();
-
-        const confirmButton = await this.driver.wait(until.elementLocated(By.xpath("//button[contains(span, 'Xác nhận')]")), 1000);
-        await this.driver.wait(until.elementIsEnabled(confirmButton), 1000);
-        await confirmButton.click();
-        await helper.waitLoadingStale(this.driver);
+        await this.clickByXpath("//button[contains(span, 'Gửi duyệt')]");
+        await this.clickByXpath("//button[contains(span, 'Xác nhận')]");
+        await this.waitLoadingStale();
     }
 
     async approveMerchant() {
-        const approveButton = await this.driver.wait(until.elementLocated(By.xpath("//button[contains(span, 'Duyệt')]")), 1000);
-        await this.driver.wait(until.elementIsEnabled(approveButton), 1000);
-        await approveButton.click();
-
-        const confirmButton = await this.driver.wait(until.elementLocated(By.xpath("//button[contains(span, 'Xác nhận')]")), 1000);
-        await this.driver.wait(until.elementIsEnabled(confirmButton), 1000);
-        await confirmButton.click();
-        await helper.waitLoadingStale(this.driver);
+        await this.clickByXpath("//button[contains(span, 'Duyệt')]");
+        await this.clickByXpath("//button[contains(span, 'Xác nhận')]");
+        await this.waitLoadingStale();
     }
 
     async deleteMerchant() {
-        const approveButton = await this.driver.wait(until.elementLocated(By.xpath("//button[contains(span, 'Xóa')]")), 1000);
-        await this.driver.wait(until.elementIsEnabled(approveButton), 1000);
-        await approveButton.click();
-
-        const confirmButton = await this.driver.wait(until.elementLocated(By.xpath("//button[contains(span, 'Xác nhận')]")), 1000);
-        await this.driver.wait(until.elementIsEnabled(confirmButton), 1000);
-        await confirmButton.click();
-        await helper.waitLoadingStale(this.driver);
+        await this.clickByXpath("//button[contains(span, 'Xóa')]");
+        await this.clickByXpath("//button[contains(span, 'Xác nhận')]");
+        await this.waitLoadingStale();
     }
 
-    async rejectMerchant() {
-        const rejectButton = await this.driver.wait(until.elementLocated(By.xpath("//button[contains(span, 'Từ chối')]")), 1000);
-        await this.driver.wait(until.elementIsEnabled(rejectButton), 1000);
-        await rejectButton.click();
-
-        const rejectInput = await this.driver.wait(until.elementLocated(By.xpath("//textarea[contains(@placeholder, 'Nhập lý do từ chối')]")), 1000);
-        await this.driver.wait(until.elementIsEnabled(rejectInput), 1000);
-        await rejectInput.click();
-        await rejectInput.sendKeys("Từ chối đối tác tự động");
-
-        const confirmButton = await this.driver.wait(until.elementLocated(By.xpath("//button[contains(span, 'Xác nhận')]")), 1000);
-        await this.driver.wait(until.elementIsEnabled(confirmButton), 1000);
-        await confirmButton.click();
-        await helper.waitLoadingStale(this.driver);
+    async rejectMerchant(rejectMessage) {
+        await this.clickByXpath("//button[contains(span, 'Từ chối')]");
+        await this.enterTextByXpath("//textarea[contains(@placeholder, 'Nhập lý do từ chối')]", rejectMessage)
+        await this.clickByXpath("//button[contains(span, 'Xác nhận')]");
+        await this.waitLoadingStale();
     }
 }
-
 module.exports = new MerchantPage();

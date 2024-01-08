@@ -1,10 +1,8 @@
-const { Builder, until, By} = require("selenium-webdriver");
+const { Builder } = require("selenium-webdriver");
 
 const chrome = require("selenium-webdriver/chrome");
 
-const config = require('../utils/config.js');
-
-const apiHost = 'https://api-flex-staging.kienlongbank.co/paygate/api'
+const config = require("../utils/config"); 
 
 function initializeChromeDriver() {
   const chromeOptions = new chrome.Options();
@@ -12,7 +10,7 @@ function initializeChromeDriver() {
   chromeOptions.addArguments("--start-maximized")
   // chromeOptions.addArguments("--auto-open-devtools-for-tabs")
 
-  const driver =  new Builder()
+  const driver = new Builder()
     .forBrowser("chrome")
     .setChromeOptions(chromeOptions)
     .build();
@@ -24,11 +22,11 @@ function initializeChromeDriver() {
 async function getToken() {
   try {
     const loginData = {
-      password: 'Klb123@',
-      username: '343366'
+      password: config.adminPassword,
+      username: config.adminUsername
     };
 
-    const response = await fetch(apiHost + '/auth/v1/cms/login', {
+    const response = await fetch(config.apiHost + '/auth/v1/cms/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -60,11 +58,22 @@ function generateRandomString(length) {
   return randomString;
 }
 
+async function randomUsername() {
+  let username;
+  let isExisted = true;
+  while (isExisted) {
+    let randomString = generateRandomString(6);
+    username = "MCUN" + randomString;
+    isExisted = await checkUsernameAvailability(username);
+  }
+  return username;
+}
+
 async function checkUsernameAvailability(username) {
   try {
     const token = await getToken();
 
-    const apiURL = apiHost+ '/user/v1/cms/checkPortal?portalNumber=' + username;
+    const apiURL = config.apiHost + '/user/v1/cms/checkPortal?portalNumber=' + username;
 
     const response = await fetch(apiURL, {
       method: 'GET',
@@ -86,11 +95,11 @@ async function checkUsernameAvailability(username) {
   }
 }
 
-async function getAllFeeBy(feeCode,feeName) {
+async function getAllFeeBy(feeCode, feeName) {
   try {
     const token = await getToken();
-    let apiURL = apiHost + '/fee/v1/cms/getAll?page=0&size=10';
-    if(feeCode && feeCode.trim() !== ''){
+    let apiURL = config.apiHost + '/fee/v1/cms/getAll?page=0&size=10';
+    if (feeCode && feeCode.trim() !== '') {
       apiURL += '&feeCode=' + encodeURIComponent(feeCode);
     }
     if (feeName && feeName.trim() !== '') {
@@ -112,7 +121,7 @@ async function getAllFeeBy(feeCode,feeName) {
         return data.data.content;
       }
     }
-    throw new Error('Cannot get fee when request is '+ apiURL);
+    throw new Error('Cannot get fee when request is ' + apiURL);
   } catch (error) {
     throw new Error(error);
   }
@@ -137,5 +146,6 @@ module.exports = {
   checkUsernameAvailability,
   generateRandomString,
   getAllFeeBy,
-  generateCompanyName
+  generateCompanyName,
+  randomUsername
 };

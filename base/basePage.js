@@ -51,7 +51,7 @@ class BasePage {
       }
 
     async getValueByXpath(xpath){
-        await driver.findElement(By.xpath(xpath)).getAttribute('value');
+        return await driver.findElement(By.xpath(xpath)).getAttribute('value');
     }
 
     async closeBrowser() {

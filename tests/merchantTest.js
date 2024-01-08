@@ -32,11 +32,15 @@ const DocEnum = require("../enums/documentEnum.js");
 
 const BusinessCateEnum = require("../enums/businessCategory.js");
 
+const FeeTypeEnum = require("../enums/feeTypeEnum.js");
+
 const { it } = require("mocha");
 
 const { resolve } = require('path');
 
 const validateHelper = require("../utils/validateHelper.js");
+
+const helper = require("../utils/helpers.js");
 
 const username = config.adminUsername;
 
@@ -50,6 +54,9 @@ const notificationPath = '//p-toastitem';
 
 let mcID;
 
+const url = baseurl + '#/quan-ly-doi-tac/quan-ly-merchant';
+
+
 describe('CREATE MERCHANT SCENARIO', function () {
 
   before(async function () {
@@ -58,20 +65,19 @@ describe('CREATE MERCHANT SCENARIO', function () {
   });
 
   after(async function () {
-    // await merchantPage.closeBrowser();
+    await merchantPage.closeBrowser();
   });
 
   it('[Happy Case] Create merchant Profile successfully', async function () {
-    const url = baseurl + '#/quan-ly-doi-tac/quan-ly-merchant';
     await merchantPage.navigate(url);
+    const myUsername = await helper.randomUsername();
 
     const profileParam = {
       merchantType: merchantTypeEnum.PERSONAL,
       affiliate: AffiliateEnum.CN_BA_RIA_VUNG_TAU,
       merchantCif: companyCoreData.cif,
       merchantNameValue: "[TEST] THÙY VINH LỘC",
-      isAutoGenUsername: true,
-      username,
+      username: myUsername,
       limitPackage: PackageEnum.VIP,
       businessCategory: BusinessCateEnum.DICH_VU_AN_UONG,
       chargeTypeValue: ChargeTypeEnum.MONTHLY,
@@ -95,9 +101,8 @@ describe('CREATE MERCHANT SCENARIO', function () {
 
     mcID = await merchantPage.createMCProfile(profileParam);
 
-    //Click continue in step 1 
+    //Click continue in step 1
     await merchantPage.clickByXpath("//button[contains(span, 'Tiếp tục')]");
-
     await merchantPage.waitLoadingStale();
 
     // Assertion 
@@ -106,18 +111,14 @@ describe('CREATE MERCHANT SCENARIO', function () {
 
   it('[Happy Case] Add ALL account successfully', async function () {
     //Start add account
-
-    const accountSelect = companyCoreData.account_no
-
-    await merchantPage.addAccountForMC(accountSelect, AccountTypeEnum.PAYMENT_ACCOUNT);
+    await merchantPage.addAccountForMC(companyCoreData.account_no, AccountTypeEnum.PAYMENT_ACCOUNT);
     await validateHelper.assertNotificationMatchByXpath(notificationPath, "Thêm mới thành công")
 
-    await merchantPage.addAccountForMC(accountSelect, AccountTypeEnum.REVENUE_ACCOUNT);
+    await merchantPage.addAccountForMC(companyCoreData.account_no, AccountTypeEnum.REVENUE_ACCOUNT);
     await validateHelper.assertNotificationMatchByXpath(notificationPath, "Thêm mới thành công")
 
-    await merchantPage.addAccountForMC(accountSelect, AccountTypeEnum.FEE_PAYMENT_ACCOUNT);
+    await merchantPage.addAccountForMC(companyCoreData.account_no, AccountTypeEnum.FEE_PAYMENT_ACCOUNT);
     await validateHelper.assertNotificationMatchByXpath(notificationPath, "Thêm mới thành công")
-
 
     //Expected 3 account add successfully to MC
     const tableBody = await driver.findElement(By.css('tbody[role="rowgroup"]'));
@@ -129,7 +130,17 @@ describe('CREATE MERCHANT SCENARIO', function () {
 
   //Step 3
   it('[Happy Case] Add MC Fee successfully', async function () {
-     await merchantPage.clickByXpath("(//button[contains(span, 'Tiếp tục')])[3]");
+
+    await merchantPage.addMCFee(FeeTypeEnum.COBO, "[AUTO] Vinamilk Ltd. MIS", "05/2024")
+    await validateHelper.assertNotificationMatchByXpath(notificationPath, "Success")
+
+    await merchantPage.addMCFee(FeeTypeEnum.POBO, "[AUTO-TEST] Hòa Solutions", "05/2024")
+    await validateHelper.assertNotificationMatchByXpath(notificationPath, "Success")
+
+    await merchantPage.addMCFee(FeeTypeEnum.EXTER_POBO, "[AUTO-TEST] Cửu Long Tech", "05/2024")
+    await validateHelper.assertNotificationMatchByXpath(notificationPath, "Success")
+
+    await merchantPage.clickByXpath("(//button[contains(span, 'Tiếp tục')])[3]");
   });
 
   //Step 4 
@@ -161,7 +172,7 @@ describe('CREATE MERCHANT SCENARIO', function () {
     await merchantPage.uploadDocument(DocEnum.BACKID, documentURL)
     await validateHelper.assertNotificationMatchByXpath(notificationPath, "Upload file thành công")
 
-    //Upload giấy tờ khác 
+    //Upload giấy tờ khác
     documentURL = resolve('./test_data/image/images.png')
     await merchantPage.uploadDocument(DocEnum.ORTHERDOCUMENT, documentURL)
     await validateHelper.assertNotificationMatchByXpath(notificationPath, "Upload file thành công")
@@ -173,54 +184,36 @@ describe('CREATE MERCHANT SCENARIO', function () {
   it('[Happy Case] Generate integration Key', async function () {
     const webhookURL = 'https://www.google.com/'
     const retryValue = '100'
-    await merchantPage.generateIntergration(webhookURL, retryValue);
 
+    //Wait until animation done
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
+    await merchantPage.enterIntegrationData(webhookURL, retryValue);
+    await merchantPage.enterIPListData("1.1.1.1");
+
+    await merchantPage.clickByXpath("//button[contains(text(), 'Lưu')]")
     await validateHelper.assertNotificationMatchByXpath(notificationPath, "Success")
   });
 
+  it('[Happy Case] Reject merchant successfully', async function () {
+    await merchantPage.navigate(url);
+    await merchantPage.navigateMerchantDetail(mcID);
 
-  // it('[Happy Case] Reject merchant successfully', async function(){
-  //   await merchantPage.navigateMerchantDetail(mcID);
+    await merchantPage.sendApproveRequest();
+    await validateHelper.assertNotificationMatchByXpath(notificationPath, "Gửi duyệt thành công")
 
-  //   await merchantPage.sendApproveRequest();
+    await merchantPage.rejectMerchant("[Test] Từ chối đối tác");
+    await validateHelper.assertNotificationMatchByXpath(notificationPath, "Từ chối duyệt thành công")
+  });
 
-  //   const regExpObject1 = new RegExp("Gửi duyệt thành công");
-  //   notification1 = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
-  //   message1 = await notification1.getText();
-  //   assert.match(message1, regExpObject1);
-  //   await driver.wait(until.stalenessOf(notification1), 10000);
+  it('[Happy Case] Approve merchant successfully', async function () {
+    await merchantPage.navigate(url);
+    await merchantPage.navigateMerchantDetail(mcID);
 
-  //   await merchantPage.rejectMerchant();
+    await merchantPage.sendApproveRequest();
+    await validateHelper.assertNotificationMatchByXpath(notificationPath, "Gửi duyệt thành công")
 
-  //   const regExpObject = new RegExp("Từ chối duyệt thành công");
-  //   notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
-  //   message = await notification.getText();
-  //   assert.match(message, regExpObject);
-
-  //   await driver.wait(until.stalenessOf(notification), 10000);
-  // });
-
-  // it('[Happy Case] Approve merchant successfully', async function(){
-
-  //   await merchantPage.navigateMerchantDetail(mcID);
-
-  //   await merchantPage.sendApproveRequest();
-
-  //   const regExpObject1 = new RegExp("Gửi duyệt thành công");
-  //   notification1 = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
-  //   message1 = await notification1.getText();
-  //   assert.match(message1, regExpObject1);
-  //   await driver.wait(until.stalenessOf(notification1), 10000);
-
-  //   await merchantPage.approveMerchant();
-
-  //   const regExpObject = new RegExp("Duyệt thành công");
-  //   notification = await driver.wait(until.elementLocated(By.xpath('//p-toastitem')), 5000);
-  //   message = await notification.getText();
-  //   assert.match(message, regExpObject);
-
-  //   await driver.wait(until.stalenessOf(notification), 10000);
-
-  // });
-
+    await merchantPage.approveMerchant();
+    await validateHelper.assertNotificationMatchByXpath(notificationPath, "Duyệt thành công")
+  });
 });
