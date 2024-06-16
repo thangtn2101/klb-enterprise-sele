@@ -1,5 +1,5 @@
 # Pre-requisites
-- Install Node.js version 8.0.0
+- Install Node.js
 # Getting started
 - Clone the repository
 ```shell
